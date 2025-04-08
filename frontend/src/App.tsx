@@ -1,35 +1,160 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from 'react';
+import './App.css';
 
-function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+interface UrlData {
+  shortenedUrl: string;
+  originalUrl: string;
 }
 
-export default App
+function App() {
+  const [originalUrl, setOriginalUrl] = useState('');
+  const [shortUrl, setShortUrl] = useState('');
+  const [ttl, setTtl] = useState('');
+  const [customUrl, setCustomUrl] = useState('');
+  const [allUrls, setAllUrls] = useState<UrlData[]>([]);
+  const [message, setMessage] = useState('');
+
+  const baseApiUrl = 'http://localhost:8080';
+
+  const handleShorten = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`${baseApiUrl}/create`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          url: originalUrl,
+          ...(ttl && { ttlMinute: ttl }),
+          ...(customUrl && { customShortenedUrl: customUrl }),
+        }),
+      });
+
+      const responseText = await response.text();
+
+      if (response.status === 429) {
+        setMessage('Rate limit exceeded. Please try again later.');
+        return;
+      }
+
+      if (response.ok) {
+        // ✅ Fix: turn key into full short URL
+        setShortUrl(`${baseApiUrl}/short/${responseText}`);
+        setMessage('URL shortened successfully!');
+      } else {
+        setMessage(`Error shortening URL: ${response.status} - ${responseText}`);
+      }
+    } catch (error) {
+      console.error('Fetch error:', error);
+      setMessage(`Error connecting to server: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  };
+
+  const handleGetAll = async () => {
+    try {
+      const response = await fetch(`${baseApiUrl}/all`);
+      const responseText = await response.text();
+
+      if (response.status === 429) {
+        setMessage('Rate limit exceeded. Please try again later.');
+        return;
+      }
+
+      if (response.ok) {
+        const urls: UrlData[] = JSON.parse(responseText);
+        setAllUrls(urls);
+      } else {
+        setMessage(`Error fetching URLs: ${response.status} - ${responseText}`);
+      }
+    } catch (error) {
+      setMessage(`Error fetching URLs: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  };
+
+  const handleDelete = async (shortenedUrl: string) => {
+    try {
+      const response = await fetch(`${baseApiUrl}/delete?shortenedUrl=${shortenedUrl}`, {
+        method: 'DELETE',
+      });
+
+      if (response.status === 429) {
+        setMessage('Rate limit exceeded. Please try again later.');
+        return;
+      }
+
+      if (response.ok) {
+        setMessage('URL deleted successfully');
+        handleGetAll();
+      } else {
+        const responseText = await response.text();
+        setMessage(`Error deleting URL: ${response.status} - ${responseText}`);
+      }
+    } catch (error) {
+      setMessage(`Error deleting URL: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  };
+
+  return (
+    <div className="app-container">
+      <h1>URL Shortener</h1>
+      <form onSubmit={handleShorten} className="shorten-form">
+        <input
+          type="url"
+          value={originalUrl}
+          onChange={(e) => setOriginalUrl(e.target.value)}
+          placeholder="Enter URL to shorten"
+          required
+          className="url-input"
+        />
+        <input
+          type="number"
+          value={ttl}
+          onChange={(e) => setTtl(e.target.value)}
+          placeholder="TTL (minutes)"
+          className="ttl-input"
+        />
+        <input
+          type="text"
+          value={customUrl}
+          onChange={(e) => setCustomUrl(e.target.value)}
+          placeholder="Custom short URL"
+          className="custom-input"
+        />
+        <button type="submit" className="shorten-button">Shorten</button>
+      </form>
+
+      {shortUrl && (
+        <div className="result-box">
+          <p>Shortened URL: <a href={shortUrl} target="_blank" rel="noopener noreferrer">{shortUrl}</a></p>
+        </div>
+      )}
+
+      {message && (
+        <div className={`message-box ${message.includes('Error') ? 'error' : 'success'}`}>
+          <p>{message}</p>
+        </div>
+      )}
+
+      <div className="url-list-container">
+        <button onClick={handleGetAll} className="show-all-button">Show All URLs</button>
+        {allUrls.length > 0 && (
+          <ul className="url-list">
+            {allUrls.map((urlData) => (
+              <li key={urlData.shortenedUrl} className="url-item">
+                <span className="short-url">{urlData.shortenedUrl}</span> →
+                <span className="original-url">{urlData.originalUrl}</span>
+                <button 
+                  onClick={() => handleDelete(urlData.shortenedUrl)}
+                  className="delete-button"
+                >
+                  Delete
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default App;
