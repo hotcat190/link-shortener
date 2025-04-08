@@ -75,4 +75,8 @@ public final class DataService {
     public void save(Data data) {
         dataRepository.save(data);
     }
+
+    public boolean isShortenedUrlExisting(String shortenedUrl) {
+        return dataRepository.existsByShortenedUrl(shortenedUrl);
+    }
 }

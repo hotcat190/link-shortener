@@ -2,7 +2,10 @@ package com.example.linkshortener.controller;
 
 import com.example.linkshortener.data.entity.Data;
 import com.example.linkshortener.service.DataService;
+import com.example.linkshortener.service.RateLimitingService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,38 +15,58 @@ import java.util.List;
 @RestController
 @RequestMapping("/")
 @RequiredArgsConstructor
-public class DataController {
-    private final DataService dataService;
+public final class DataController {
+    @Autowired
+    private DataService dataService;
+
+    @Autowired
+    private RateLimitingService rateLimitingService;
 
     @PostMapping("/create")
     public ResponseEntity<String> createShortUrl(
             @RequestParam String url,
             @RequestParam(required = false) Long ttlMinute,
-            @RequestParam(required = false) String customShortenedUrl
+            @RequestParam(required = false) String customShortenedUrl,
+            HttpServletRequest request
     ) {
-        return ResponseEntity.ok(dataService.shortenUrl(url, ttlMinute, customShortenedUrl));
+        if (rateLimitingService.ok(request)) {
+            return ResponseEntity.ok(dataService.shortenUrl(url, ttlMinute, customShortenedUrl));
+        } else {
+            return ResponseEntity.status(429).build(); // HTTP 429 Too Many Requests
+        }
     }
 
     @GetMapping("/short/{shortenedUrl}")
-    public ResponseEntity<Void> redirectToOriginalUrl(@PathVariable String shortenedUrl) {
-        String originalUrl = dataService.findOrigin(shortenedUrl);
-        if (originalUrl != null) {
-            return ResponseEntity.status(302) // HTTP 302 Found
-                    .location(URI.create(originalUrl))
-                    .build();
+    public ResponseEntity<String> getOriginalUrl(@PathVariable String shortenedUrl, HttpServletRequest request) {
+        if (rateLimitingService.ok(request)) {
+            String originalUrl = dataService.findOrigin(shortenedUrl);
+            if (originalUrl != null) {
+                return ResponseEntity.ok(originalUrl);
+
+            } else {
+                return ResponseEntity.notFound().build();
+            }
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(429).build(); // HTTP 429 Too Many Requests
         }
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<Data>> getAllUrls() {
-        return ResponseEntity.ok(dataService.findAll());
+    public ResponseEntity<List<Data>> getAllUrls(HttpServletRequest request) {
+        if (rateLimitingService.ok(request)) {
+            return ResponseEntity.ok(dataService.findAll());
+        } else {
+            return ResponseEntity.status(429).build(); // HTTP 429 Too Many Requests
+        }
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<Void> deleteShortUrl(@RequestParam String shortenedUrl) {
-        dataService.deleteUrl(shortenedUrl);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> deleteShortUrl(@RequestParam String shortenedUrl, HttpServletRequest request) {
+        if (rateLimitingService.ok(request)) {
+            dataService.deleteUrl(shortenedUrl);
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.status(429).build();
+        }
     }
 } 
