@@ -5,6 +5,8 @@ import com.example.linkshortener.data.repository.DataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -39,7 +41,7 @@ public final class DataService {
         return null;
     }
 
-    public String shortenUrl(String url, Long ttlMinute, String customShortenedUrl) {
+    public String shortenUrl(String url, Long ttlMinute, String customShortenedUrl) throws SQLIntegrityConstraintViolationException {
         String shortenedUrl = customShortenedUrl != null ?
                 customShortenedUrl : UUID.randomUUID().toString();
 
@@ -56,6 +58,7 @@ public final class DataService {
                 .build();
 
         dataRepository.save(data);
+
         return data.getShortenedUrl();
     }
 

@@ -9,10 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:5173") // Vite's default port
+@CrossOrigin(origins = "*") // Vite's default port
 @RestController
 @RequestMapping("/")
 @RequiredArgsConstructor
@@ -31,7 +31,12 @@ public final class DataController {
             HttpServletRequest request
     ) {
         if (rateLimitingService.ok(request)) {
-            return ResponseEntity.ok(dataService.shortenUrl(url, ttlMinute, customShortenedUrl));
+            try {
+                String shortenedUrl = dataService.shortenUrl(url, ttlMinute, customShortenedUrl);
+                return ResponseEntity.ok(shortenedUrl);
+            } catch (SQLIntegrityConstraintViolationException e) {
+                return ResponseEntity.status(409).body("Custom shortened URL already exists.");
+            }
         } else {
             return ResponseEntity.status(429).build(); // HTTP 429 Too Many Requests
         }
@@ -43,7 +48,6 @@ public final class DataController {
             String originalUrl = dataService.findOrigin(shortenedUrl);
             if (originalUrl != null) {
                 return ResponseEntity.ok(originalUrl);
-
             } else {
                 return ResponseEntity.notFound().build();
             }

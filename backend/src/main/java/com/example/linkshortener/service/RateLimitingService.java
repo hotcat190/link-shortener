@@ -15,6 +15,8 @@ public final class RateLimitingService {
 
     private final Map<String, Bucket> buckets;
 
+    private int blockedRequests = 0;
+
     @Autowired
     public RateLimitingService(RateLimiterConfig rateLimiterConfig, Map<String, Bucket> buckets) {
         this.rateLimiterConfig = rateLimiterConfig;
@@ -28,7 +30,12 @@ public final class RateLimitingService {
         if (enabled) {
             String clientId = getClientIp(request);
             Bucket bucket = buckets.computeIfAbsent(clientId, k -> rateLimiterConfig.createNewBucket());
-            return bucket.tryConsume(1);
+            boolean allowed = bucket.tryConsume(1);
+            if (!allowed) {
+                blockedRequests += 1;
+                System.err.println("Blocked request from " + clientId + ". Total blocked requests: " + blockedRequests);
+            }
+            return allowed;
         } else {
             return true;
         }
