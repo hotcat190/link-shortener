@@ -1,5 +1,5 @@
 import http from "k6/http";
-import { fail } from "k6";
+import { fail, sleep } from "k6";
 
 const sampleUrls = [
   "https://youtube.com",
@@ -42,13 +42,9 @@ function getRandomCustomShortenedUrlOrNull() {
   }
 }
 
-// 500 random ip address
+// 200 random ip address
 function getRandomIp() {
-  if (Math.random() < 0.5) {
-    return `192.168.1.${Math.floor(Math.random() * 255)}`;
-  } else {
-    return `10.10.1.${Math.floor(Math.random() * 255)}`;
-  }
+  return `192.168.1.${Math.floor(Math.random() * 200)}`;
 }
 
 function getRandomPayload() {
@@ -91,4 +87,6 @@ export default function () {
   if (!(res.status === 200 || res.status === 404 || res.status === 429)) {
     fail(`Unexpected status code: ${res.status}`);
   }
+
+  sleep(0.1);
 }
