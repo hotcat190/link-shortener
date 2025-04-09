@@ -1,29 +1,34 @@
-import { useState } from 'react';
-import './App.css';
+import { useState } from "react";
+import { Routes, Route } from "react-router-dom";
+import RedirectPage from "./RedirectPage.tsx";
+import "./App.css";
+
 
 interface UrlData {
   shortenedUrl: string;
-  originalUrl: string;
+  url: string;
+  clickCount: string;
+  expirationTime: string;
 }
 
-function App() {
-  const [originalUrl, setOriginalUrl] = useState('');
-  const [shortUrl, setShortUrl] = useState('');
-  const [ttl, setTtl] = useState('');
-  const [customUrl, setCustomUrl] = useState('');
+const MainApp: React.FC = () => {
+  const [url, setOriginalUrl] = useState("");
+  const [shortUrl, setShortUrl] = useState("");
+  const [ttl, setTtl] = useState("");
+  const [customUrl, setCustomUrl] = useState("");
   const [allUrls, setAllUrls] = useState<UrlData[]>([]);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
 
-  const baseApiUrl = 'http://localhost:8080';
+  const baseApiUrl = "http://localhost:8080";
 
   const handleShorten = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const response = await fetch(`${baseApiUrl}/create`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({
-          url: originalUrl,
+          url: url,
           ...(ttl && { ttlMinute: ttl }),
           ...(customUrl && { customShortenedUrl: customUrl }),
         }),
@@ -32,20 +37,25 @@ function App() {
       const responseText = await response.text();
 
       if (response.status === 429) {
-        setMessage('Rate limit exceeded. Please try again later.');
+        setMessage("Rate limit exceeded. Please try again later.");
         return;
       }
 
       if (response.ok) {
-        // ✅ Fix: turn key into full short URL
         setShortUrl(`${baseApiUrl}/short/${responseText}`);
-        setMessage('URL shortened successfully!');
+        setMessage("URL shortened successfully!");
       } else {
-        setMessage(`Error shortening URL: ${response.status} - ${responseText}`);
+        setMessage(
+          `Error shortening URL: ${response.status} - ${responseText}`
+        );
       }
     } catch (error) {
-      console.error('Fetch error:', error);
-      setMessage(`Error connecting to server: ${error instanceof Error ? error.message : String(error)}`);
+      console.error("Fetch error:", error);
+      setMessage(
+        `Error connecting to server: ${
+          error instanceof Error ? error.message : String(error)
+        }`
+      );
     }
   };
 
@@ -55,7 +65,7 @@ function App() {
       const responseText = await response.text();
 
       if (response.status === 429) {
-        setMessage('Rate limit exceeded. Please try again later.');
+        setMessage("Rate limit exceeded. Please try again later.");
         return;
       }
 
@@ -66,40 +76,52 @@ function App() {
         setMessage(`Error fetching URLs: ${response.status} - ${responseText}`);
       }
     } catch (error) {
-      setMessage(`Error fetching URLs: ${error instanceof Error ? error.message : String(error)}`);
+      setMessage(
+        `Error fetching URLs: ${
+          error instanceof Error ? error.message : String(error)
+        }`
+      );
     }
   };
 
   const handleDelete = async (shortenedUrl: string) => {
     try {
-      const response = await fetch(`${baseApiUrl}/delete?shortenedUrl=${shortenedUrl}`, {
-        method: 'DELETE',
-      });
+      const response = await fetch(
+        `${baseApiUrl}/delete?shortenedUrl=${shortenedUrl}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       if (response.status === 429) {
-        setMessage('Rate limit exceeded. Please try again later.');
+        setMessage("Rate limit exceeded. Please try again later.");
         return;
       }
 
       if (response.ok) {
-        setMessage('URL deleted successfully');
+        setMessage("URL deleted successfully");
         handleGetAll();
       } else {
         const responseText = await response.text();
         setMessage(`Error deleting URL: ${response.status} - ${responseText}`);
       }
     } catch (error) {
-      setMessage(`Error deleting URL: ${error instanceof Error ? error.message : String(error)}`);
+      setMessage(
+        `Error deleting URL: ${
+          error instanceof Error ? error.message : String(error)
+        }`
+      );
     }
   };
 
   return (
+   
     <div className="app-container">
       <h1>URL Shortener</h1>
       <form onSubmit={handleShorten} className="shorten-form">
         <input
           type="url"
-          value={originalUrl}
+          value={url}
           onChange={(e) => setOriginalUrl(e.target.value)}
           placeholder="Enter URL to shorten"
           required
@@ -119,30 +141,56 @@ function App() {
           placeholder="Custom short URL"
           className="custom-input"
         />
-        <button type="submit" className="shorten-button">Shorten</button>
+        <button type="submit" className="shorten-button">
+          Shorten
+        </button>
       </form>
 
       {shortUrl && (
         <div className="result-box">
-          <p>Shortened URL: <a href={shortUrl} target="_blank" rel="noopener noreferrer">{shortUrl}</a></p>
+          <p>
+            Shortened URL:{" "}
+            <a href={shortUrl} target="_blank" rel="noopener noreferrer">
+              {shortUrl}
+            </a>
+          </p>
         </div>
       )}
 
       {message && (
-        <div className={`message-box ${message.includes('Error') ? 'error' : 'success'}`}>
+        <div
+          className={`message-box ${
+            message.includes("Error") ? "error" : "success"
+          }`}
+        >
           <p>{message}</p>
         </div>
       )}
 
       <div className="url-list-container">
-        <button onClick={handleGetAll} className="show-all-button">Show All URLs</button>
+        <button onClick={handleGetAll} className="show-all-button">
+          Show All URLs
+        </button>
         {allUrls.length > 0 && (
           <ul className="url-list">
             {allUrls.map((urlData) => (
               <li key={urlData.shortenedUrl} className="url-item">
-                <span className="short-url">{urlData.shortenedUrl}</span> →
-                <span className="original-url">{urlData.originalUrl}</span>
-                <button 
+                <span className="original-url">{urlData.url}</span>
+                <span> → </span>
+                <span className="short-url"><a href={`/r/${urlData.shortenedUrl}`} target="_blank">
+                  {urlData.shortenedUrl}
+                </a></span>
+                
+                <span className="click-count">
+                  Click count: {urlData.clickCount}
+                </span>
+
+                <span className="expiration">
+                  {urlData.expirationTime
+                    ? `Expires at: ${urlData.expirationTime}`
+                    : "No expiration time"}
+                </span>
+                <button
                   onClick={() => handleDelete(urlData.shortenedUrl)}
                   className="delete-button"
                 >
@@ -156,5 +204,14 @@ function App() {
     </div>
   );
 }
+
+const App: React.FC = () => {
+  return (
+    <Routes>
+      <Route path="/" element={<MainApp />} />
+      <Route path="/r/:shortId" element={<RedirectPage />} />
+    </Routes>
+  );
+};
 
 export default App;

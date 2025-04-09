@@ -17,4 +17,4 @@ CREATE EVENT delete_expired_urls
 ON SCHEDULE EVERY 1 MINUTE
 DO
   DELETE FROM data
-  WHERE expiration_time IS NOT NULL AND expiration_time < NOW();
+  WHERE expirationTime IS NOT NULL AND expiration_time < NOW();
