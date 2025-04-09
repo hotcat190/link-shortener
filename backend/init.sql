@@ -12,8 +12,9 @@ CREATE TABLE data (
     PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
+
 CREATE EVENT delete_expired_urls
 ON SCHEDULE EVERY 1 MINUTE
 DO
   DELETE FROM data
-  WHERE expirationTime IS NOT NULL AND expirationTime < NOW();
+  WHERE expirationTime IS NOT NULL AND expiration_time < NOW();

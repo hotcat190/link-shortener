@@ -34,7 +34,6 @@ function getRandomTtlMinuteOrNull() {
 }
 
 function getRandomCustomShortenedUrlOrNull() {
-  return "14b23f7a-2bc1-4fdb-9f77-619eeffd8088";
   if (Math.random() < 0.5) {
     return null; // 50% chance to return null
   } else {
@@ -68,7 +67,7 @@ function getRandomPayload() {
 
 export let options = {
   vus: 50,
-  duration: "1s",
+  duration: "60s",
 };
 
 http.setResponseCallback(http.expectedStatuses(200, 404, 409, 429));

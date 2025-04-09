@@ -4,22 +4,20 @@ import { fail } from "k6";
 // Sample shortened url ids for testing
 // Please replace with your own ids if needed
 const sampleValidIds = [
-  "0fc7a50e-711c-4b1a-99c9-6c4371fe5a76",
-  "023b10e4-3438-4f81-9b21-609edac8f94b",
-  "99798d8b-d8f9-4f33-8d3b-60c632d8dfb0",
-  "my-short-url-278fnq",
-  "8f668174-9c88-49da-88f4-ea4a6827b199",
-  "5a010e06-c5bb-486f-88e2-1d58079004f6",
-  "8b0a4956-ab0c-43e7-a132-8f63af796007",
-  "my-short-url-qwxett",
-  "2210af47-e418-491b-b11d-e5df02b7a392",
-  "d2120f3d-ecd3-4c4e-a385-3eb097aa63a9",
-  "my-short-url-4xr8s0",
-  "dd09a1bb-d033-49dd-b220-05940a571034",
-  "my-short-url-m4jk8b",
-  "65a1b20f-092c-4fe5-9375-9492ef3717ef",
-  "7093f72f-e78c-49a3-8112-be27a27e24e4",
-  "my-short-url-a4tx9j",
+  "custom-ill1yimx9f",
+  "6d993398-5cc3-4c6f-bbb6-5d51ceaaeaab",
+  "409da585-ef17-494c-94d6-108eaff31076",
+  "8266dd82-fba2-4f5c-9874-ebfd92d49f62",
+  "custom-cqdn0utc9bs",
+  "custom-sx0cc29z6wk",
+  "ec42cc4c-944d-464d-a3f0-705c8dccb3d6",
+  "custom-vausyonb6ad",
+  "custom-ggkcud1z0rk",
+  "ef5fa22c-0b73-45c0-8e8e-14b36f59fd27",
+  "custom-5rsduqcfs67",
+  "custom-7j36kpbgi2g",
+  "1a472e53-d00c-4314-a333-820a889d3965",
+  "9ee23efa-a510-44d5-b41a-9c3dbcca88fb",
 ];
 
 const sampleUrls = [
@@ -97,7 +95,7 @@ function getRandomPayload() {
 
 export let options = {
   vus: 50,
-  duration: "10s",
+  duration: "60s",
 };
 
 http.setResponseCallback(http.expectedStatuses(200, 404, 409, 429));
