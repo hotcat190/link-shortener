@@ -21,8 +21,8 @@ const MainApp: React.FC = () => {
 
   const baseApiUrl = "http://localhost:8080";
 
-  const handleShorten = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleShorten = async () => {
+   
     try {
       const response = await fetch(`${baseApiUrl}/create`, {
         method: "POST",
@@ -113,12 +113,16 @@ const MainApp: React.FC = () => {
       );
     }
   };
-
+  const handleSubmit = async(e: React.FormEvent) => {
+    e.preventDefault();
+    await handleShorten();  
+    await handleGetAll();   
+  };
   return (
    
     <div className="app-container">
       <h1>URL Shortener</h1>
-      <form onSubmit={handleShorten} className="shorten-form">
+      <form onSubmit={handleSubmit} className="shorten-form">
         <input
           type="url"
           value={url}
@@ -173,11 +177,11 @@ const MainApp: React.FC = () => {
         </button>
         {allUrls.length > 0 && (
           <ul className="url-list">
-            {allUrls.map((urlData) => (
+            {allUrls.slice().reverse().map((urlData) => (
               <li key={urlData.shortenedUrl} className="url-item">
                 <span className="original-url">{urlData.url}</span>
                 <span> → </span>
-                <span className="short-url"><a href={`/r/${urlData.shortenedUrl}`} target="_blank">
+                <span className="short-url"><a href={`/redirect/${urlData.shortenedUrl}`} target="_blank">
                   {urlData.shortenedUrl}
                 </a></span>
                 
@@ -209,7 +213,7 @@ const App: React.FC = () => {
   return (
     <Routes>
       <Route path="/" element={<MainApp />} />
-      <Route path="/r/:shortId" element={<RedirectPage />} />
+      <Route path="/redirect/:shortId" element={<RedirectPage />} />
     </Routes>
   );
 };
