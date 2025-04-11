@@ -20,4 +20,4 @@ COPY src ./src
 RUN mvn package -DskipTests
 
 # Specify the command to run the application
-CMD ["java", "-jar", "target/linkshortener-0.0.1-SNAPSHOT.jar", "--rate.limit.enabled=true"]
+CMD ["java", "-jar", "target/linkshortener-0.0.1-SNAPSHOT.jar", "--rate.limit.enabled=false"]

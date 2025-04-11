@@ -4,8 +4,8 @@ const Docker = require("dockerode");
 const DOCKER_HOST = "localhost";
 const DOCKER_PORT = 2375; // Default TCP port for Docker API (no TLS)
 
-const APP_CONTAINER_NAME = "backend-with-rate-limiting-app-1";
-const DB_CONTAINER_NAME = "backend-with-rate-limiting-db-1";
+const APP_CONTAINER_NAME = "backend-app-1";
+const DB_CONTAINER_NAME = "backend-db-1";
 
 const docker = new Docker({
   host: DOCKER_HOST,
