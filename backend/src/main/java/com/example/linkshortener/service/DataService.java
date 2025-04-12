@@ -1,10 +1,10 @@
 package com.example.linkshortener.service;
 
+import com.example.linkshortener.data.dto.CreationRequest;
 import com.example.linkshortener.data.entity.Data;
 import com.example.linkshortener.data.repository.DataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDateTime;
@@ -17,7 +17,7 @@ public final class DataService {
     private final CacheService cacheService;
 
     @Autowired
-    public DataService(DataRepository dataRepository,CacheService cacheService) {
+    public DataService(DataRepository dataRepository, CacheService cacheService) {
         this.dataRepository = dataRepository;
         this.cacheService = cacheService;
     }
@@ -51,7 +51,11 @@ public final class DataService {
         return null;
     }
 
-    public String shortenUrl(String url, Long ttlMinute, String customShortenedUrl) throws SQLIntegrityConstraintViolationException {
+    public String shortenUrl(CreationRequest request) throws SQLIntegrityConstraintViolationException {
+        String url = request.getUrl();
+        Long ttlMinute = request.getTtlMinute();
+        String customShortenedUrl = request.getCustomShortenedUrl();
+
         String shortenedUrl = customShortenedUrl != null ?
                 customShortenedUrl : UUID.randomUUID().toString();
 

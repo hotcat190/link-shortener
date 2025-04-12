@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import RedirectPage from "./RedirectPage.tsx";
 import "./App.css";
+import CreationRequest from "./types/creationRequest.ts";
 
 interface UrlData {
   shortenedUrl: string;
@@ -18,18 +19,22 @@ const MainApp: React.FC = () => {
   const [allUrls, setAllUrls] = useState<UrlData[]>([]);
   const [message, setMessage] = useState("");
 
-  const baseApiUrl = "http://localhost:8080/";
+  const baseApiUrl = "http://localhost";
 
   const handleShorten = async () => {
     try {
+      const requestBody: CreationRequest = {
+        url: url,
+        ttlMinute: ttl ? parseInt(ttl) : null,
+        customShortenedUrl: customUrl,
+      };
+
+      console.log("Request Body:", requestBody);
+
       const response = await fetch(`${baseApiUrl}/create`, {
         method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({
-          url: url,
-          ...(ttl && { ttlMinute: ttl }),
-          ...(customUrl && { customShortenedUrl: customUrl }),
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestBody),
       });
 
       const responseText = await response.text();
