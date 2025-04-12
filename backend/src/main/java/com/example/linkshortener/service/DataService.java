@@ -5,6 +5,7 @@ import com.example.linkshortener.data.repository.DataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,13 +14,21 @@ import java.util.UUID;
 @Service
 public final class DataService {
     private final DataRepository dataRepository;
+    private final CacheService cacheService;
 
     @Autowired
-    public DataService(DataRepository dataRepository) {
+    public DataService(DataRepository dataRepository,CacheService cacheService) {
         this.dataRepository = dataRepository;
+        this.cacheService = cacheService;
     }
 
     public String findOrigin(String shortenedUrl) {
+        // find infor from cache first
+        String cachedUrl = cacheService.getOriginalUrlFromCache(shortenedUrl);
+        if(cachedUrl != null){
+            System.out.println("URL retrieved from cache ^^");
+            return cachedUrl;
+        }
         Data data = dataRepository.findByShortenedUrl(shortenedUrl).orElse(null);
 
         if (data != null) {
@@ -30,6 +39,8 @@ public final class DataService {
                     data.getExpirationTime().isAfter(LocalDateTime.now())) {
                 data.setClickCount(data.getClickCount() + 1);
                 dataRepository.save(data);
+                cacheService.saveToCache(shortenedUrl, data.getUrl(), data.getExpirationTime() != null ? data.getExpirationTime().toString() : null);
+
                 return data.getUrl();
             } else {
                 deleteUrl(shortenedUrl);
@@ -57,13 +68,18 @@ public final class DataService {
                 .build();
 
         dataRepository.save(data);
-
+        cacheService.saveToCache(shortenedUrl, url, ttlMinute != null ? ttlMinute.toString(): null);
+       
         return data.getShortenedUrl();
     }
 
+   
     public void deleteUrl(String shortenedUrl) {
         dataRepository.findByShortenedUrl(shortenedUrl)
-                .ifPresent(dataRepository::delete);
+                .ifPresent(data -> {
+                    dataRepository.delete(data); // Delete from DB
+                    cacheService.deleteFromCache(shortenedUrl);//delete from Redis
+                });
     }
 
     public void deleteUrlById(Long id) {

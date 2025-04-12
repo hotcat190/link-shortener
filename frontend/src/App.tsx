@@ -18,7 +18,7 @@ const MainApp: React.FC = () => {
   const [allUrls, setAllUrls] = useState<UrlData[]>([]);
   const [message, setMessage] = useState("");
 
-  const baseApiUrl = "http://localhost";
+  const baseApiUrl = "http://localhost:8080/";
 
   const handleShorten = async () => {
     try {
