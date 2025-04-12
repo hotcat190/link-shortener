@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 public class CacheService {
 
     private final RedisTemplate<String, String> redisTemplate;
+
     private final HashOperations<String, String, String> hashOps;
 
     @Autowired
