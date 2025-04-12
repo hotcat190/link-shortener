@@ -8,7 +8,7 @@ const RedirectPage: React.FC = () => {
   useEffect(() => {
     if (!shortId) return;
 
-    fetch(`http://localhost:8080/short/${shortId}`)
+    fetch(`http://localhost/short/${shortId}`)
       .then(async (res) => {
         if (res.status === 429) {
           throw new Error("Rate limit exceeded");

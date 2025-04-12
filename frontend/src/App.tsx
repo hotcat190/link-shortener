@@ -3,7 +3,6 @@ import { Routes, Route } from "react-router-dom";
 import RedirectPage from "./RedirectPage.tsx";
 import "./App.css";
 
-
 interface UrlData {
   shortenedUrl: string;
   url: string;
@@ -19,10 +18,9 @@ const MainApp: React.FC = () => {
   const [allUrls, setAllUrls] = useState<UrlData[]>([]);
   const [message, setMessage] = useState("");
 
-  const baseApiUrl = "http://localhost:8080";
+  const baseApiUrl = "http://localhost";
 
   const handleShorten = async () => {
-   
     try {
       const response = await fetch(`${baseApiUrl}/create`, {
         method: "POST",
@@ -113,13 +111,12 @@ const MainApp: React.FC = () => {
       );
     }
   };
-  const handleSubmit = async(e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await handleShorten();  
-    await handleGetAll();   
+    await handleShorten();
+    await handleGetAll();
   };
   return (
-   
     <div className="app-container">
       <h1>URL Shortener</h1>
       <form onSubmit={handleSubmit} className="shorten-form">
@@ -177,37 +174,45 @@ const MainApp: React.FC = () => {
         </button>
         {allUrls.length > 0 && (
           <ul className="url-list">
-            {allUrls.slice().reverse().map((urlData) => (
-              <li key={urlData.shortenedUrl} className="url-item">
-                <span className="original-url">{urlData.url}</span>
-                <span> → </span>
-                <span className="short-url"><a href={`/redirect/${urlData.shortenedUrl}`} target="_blank">
-                  {urlData.shortenedUrl}
-                </a></span>
-                
-                <span className="click-count">
-                  Click count: {urlData.clickCount}
-                </span>
+            {allUrls
+              .slice()
+              .reverse()
+              .map((urlData) => (
+                <li key={urlData.shortenedUrl} className="url-item">
+                  <span className="original-url">{urlData.url}</span>
+                  <span> → </span>
+                  <span className="short-url">
+                    <a
+                      href={`/redirect/${urlData.shortenedUrl}`}
+                      target="_blank"
+                    >
+                      {urlData.shortenedUrl}
+                    </a>
+                  </span>
 
-                <span className="expiration">
-                  {urlData.expirationTime
-                    ? `Expires at: ${urlData.expirationTime}`
-                    : "No expiration time"}
-                </span>
-                <button
-                  onClick={() => handleDelete(urlData.shortenedUrl)}
-                  className="delete-button"
-                >
-                  Delete
-                </button>
-              </li>
-            ))}
+                  <span className="click-count">
+                    Click count: {urlData.clickCount}
+                  </span>
+
+                  <span className="expiration">
+                    {urlData.expirationTime
+                      ? `Expires at: ${urlData.expirationTime}`
+                      : "No expiration time"}
+                  </span>
+                  <button
+                    onClick={() => handleDelete(urlData.shortenedUrl)}
+                    className="delete-button"
+                  >
+                    Delete
+                  </button>
+                </li>
+              ))}
           </ul>
         )}
       </div>
     </div>
   );
-}
+};
 
 const App: React.FC = () => {
   return (
