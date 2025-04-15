@@ -197,12 +197,14 @@ const MainApp: React.FC = () => {
 
                   <span className="click-count">
                     Click count: {urlData.clickCount}
+                    <div className="note">update every 1 minute</div>
                   </span>
 
                   <span className="expiration">
-                    {urlData.expirationTime
+                    <div>{urlData.expirationTime
                       ? `Expires at: ${urlData.expirationTime}`
-                      : "No expiration time"}
+                      : "No expiration time"}</div>
+                      
                   </span>
                   <button
                     onClick={() => handleDelete(urlData.shortenedUrl)}

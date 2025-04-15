@@ -158,6 +158,10 @@ h1 {
   width: 150px;
   text-align: center;
 }
+.url-item span.click-count .note{
+  font-size: 12px;
+  font-style: italic;
+}
 .delete-button {
   padding: 5px 10px;
   background: #dc3545;
