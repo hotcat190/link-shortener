@@ -27,6 +27,7 @@ public final class DataService {
         String cachedUrl = cacheService.getOriginalUrlFromCache(shortenedUrl);
         if(cachedUrl != null){
             System.out.println("URL retrieved from cache ^^");
+            cacheService.incrementClickCount(shortenedUrl);
             return cachedUrl;
         }
         Data data = dataRepository.findByShortenedUrl(shortenedUrl).orElse(null);
@@ -47,7 +48,7 @@ public final class DataService {
                 return null;
             }
         }
-
+        
         return null;
     }
 
@@ -56,8 +57,9 @@ public final class DataService {
         Long ttlMinute = request.getTtlMinute();
         String customShortenedUrl = request.getCustomShortenedUrl();
 
-        String shortenedUrl = customShortenedUrl != null ?
-                customShortenedUrl : UUID.randomUUID().toString();
+        String shortenedUrl = (customShortenedUrl != null && !customShortenedUrl.trim().isEmpty()) 
+                      ? customShortenedUrl.trim() 
+                      : UUID.randomUUID().toString();
 
         LocalDateTime creationTime = LocalDateTime.now();
 
@@ -80,10 +82,9 @@ public final class DataService {
    
     public void deleteUrl(String shortenedUrl) {
         dataRepository.findByShortenedUrl(shortenedUrl)
-                .ifPresent(data -> {
-                    dataRepository.delete(data); // Delete from DB
-                    cacheService.deleteFromCache(shortenedUrl);//delete from Redis
-                });
+        .ifPresent(dataRepository::delete); // Shorter lambda
+
+        cacheService.deleteFromCache(shortenedUrl); // Still delete from Redis just in case
     }
 
     public void deleteUrlById(Long id) {

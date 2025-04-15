@@ -1,17 +1,23 @@
 package com.example.linkshortener.service;
 
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.stereotype.Service;
+
+import com.example.linkshortener.data.repository.DataRepository;
 
 @Service
 public class CacheService {
 
     private final RedisTemplate<String, String> redisTemplate;
-
+    
+    @Autowired
+    private DataRepository dataRepository;
     private final HashOperations<String, String, String> hashOps;
 
     @Autowired
@@ -27,10 +33,14 @@ public class CacheService {
         // Save the URL and other attributes to the Redis hash
         hashOps.put(key, "url", originalUrl);
         // Optionally, store other data (creation time, expiration) in separate fields
-        hashOps.put(key, "ttl", ttl);
-
         // Set expiration for the key (optional)
-        redisTemplate.expire(key, Long.parseLong(ttl), TimeUnit.MINUTES);
+        if (ttl != null) {
+            hashOps.put(key, "ttl", ttl);
+            redisTemplate.expire(key, Long.parseLong(ttl), TimeUnit.MINUTES);
+        } else {
+            // If there's no ttl, remove any expiration on the key, making it persist indefinitely
+            redisTemplate.persist(key);  // This removes the TTL (sets it to never expire)
+        }
     }
 
     // Retrieve original URL from cache
@@ -46,10 +56,35 @@ public class CacheService {
 
     // Delete URL from cache
     public void deleteFromCache(String shortenedUrl) {
-        String key = "url:" + shortenedUrl;
+        redisTemplate.delete("url:" + shortenedUrl);
+    }
 
-        if (redisTemplate.hasKey(key)) {
-            redisTemplate.delete(key); // Delete the cache entry
+    public void incrementClickCount(String shortenedUrl) {
+        String key = "clicks:" + shortenedUrl;
+        redisTemplate.opsForValue().increment(key);
+        redisTemplate.expire(key, 1, TimeUnit.HOURS); // Optional
+    }
+
+    @Scheduled(fixedRate = 1 * 60 * 1000) // Every 5 minutes
+    public void syncClickCountsToDatabase() {
+        Set<String> keys = redisTemplate.keys("clicks:*");
+
+        if (keys != null) {
+            for (String key : keys) {
+                String shortenedUrl = key.replace("clicks:", "");
+                String value = redisTemplate.opsForValue().get(key);
+
+                if (value != null) {
+                    Long clickIncrement = Long.parseLong(value);
+                    dataRepository.findByShortenedUrl(shortenedUrl).ifPresent(data -> {
+                        data.setClickCount(data.getClickCount() + clickIncrement.intValue());
+                        dataRepository.save(data);
+                    });
+
+                    // Clear the counter in Redis
+                    redisTemplate.delete(key);
+                }
+            }
         }
     }
 }
