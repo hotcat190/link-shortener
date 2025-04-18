@@ -27,7 +27,7 @@ public final class DataService {
         String cachedUrl = cacheService.getOriginalUrlFromCache(shortenedUrl);
         if(cachedUrl != null){
             System.out.println("URL retrieved from cache ^^");
-            cacheService.incrementClickCount(shortenedUrl);
+            //cacheService.incrementClickCount(shortenedUrl);
             return cachedUrl;
         }
         Data data = dataRepository.findByShortenedUrl(shortenedUrl).orElse(null);

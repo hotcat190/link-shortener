@@ -14,13 +14,14 @@ body {
   font-family: Arial, sans-serif;
 }
 
+
 h1 {
   text-align: center;
   color: #333;
   margin-bottom: 30px;
 }
 
-.shorten-form {
+/*.shorten-form {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;

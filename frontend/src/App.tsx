@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import RedirectPage from "./RedirectPage.tsx";
+import UrlForm from "./components/Form/Form.tsx";
+import UrlList from "./components/UrlList/UrlList.tsx";
+import MessageBox from "./components/MessageBox/MessageBox.tsx";
+import ResultBox from "./components/ResultBox/ResultBox.tsx";
 import "./App.css";
 import CreationRequest from "./types/creationRequest.ts";
 
@@ -124,99 +128,18 @@ const MainApp: React.FC = () => {
   return (
     <div className="app-container">
       <h1>URL Shortener</h1>
-      <form onSubmit={handleSubmit} className="shorten-form">
-        <input
-          type="url"
-          value={url}
-          onChange={(e) => setOriginalUrl(e.target.value)}
-          placeholder="Enter URL to shorten"
-          required
-          className="url-input"
-        />
-        <input
-          type="number"
-          value={ttl}
-          onChange={(e) => setTtl(e.target.value)}
-          placeholder="TTL (minutes)"
-          className="ttl-input"
-        />
-        <input
-          type="text"
-          value={customUrl}
-          onChange={(e) => setCustomUrl(e.target.value)}
-          placeholder="Custom short URL"
-          className="custom-input"
-        />
-        <button type="submit" className="shorten-button">
-          Shorten
-        </button>
-      </form>
-
-      {shortUrl && (
-        <div className="result-box">
-          <p>
-            Shortened URL:{" "}
-            <a href={shortUrl} target="_blank" rel="noopener noreferrer">
-              {shortUrl}
-            </a>
-          </p>
-        </div>
-      )}
-
-      {message && (
-        <div
-          className={`message-box ${
-            message.includes("Error") ? "error" : "success"
-          }`}
-        >
-          <p>{message}</p>
-        </div>
-      )}
-
-      <div className="url-list-container">
-        <button onClick={handleGetAll} className="show-all-button">
-          Show All URLs
-        </button>
-        {allUrls.length > 0 && (
-          <ul className="url-list">
-            {allUrls
-              .slice()
-              .reverse()
-              .map((urlData) => (
-                <li key={urlData.shortenedUrl} className="url-item">
-                  <span className="original-url">{urlData.url}</span>
-                  <span> → </span>
-                  <span className="short-url">
-                    <a
-                      href={`/redirect/${urlData.shortenedUrl}`}
-                      target="_blank"
-                    >
-                      {urlData.shortenedUrl}
-                    </a>
-                  </span>
-
-                  <span className="click-count">
-                    Click count: {urlData.clickCount}
-                    <div className="note">update every 1 minute</div>
-                  </span>
-
-                  <span className="expiration">
-                    <div>{urlData.expirationTime
-                      ? `Expires at: ${urlData.expirationTime}`
-                      : "No expiration time"}</div>
-                      
-                  </span>
-                  <button
-                    onClick={() => handleDelete(urlData.shortenedUrl)}
-                    className="delete-button"
-                  >
-                    Delete
-                  </button>
-                </li>
-              ))}
-          </ul>
-        )}
-      </div>
+      <UrlForm
+        url={url}
+        ttl={ttl}
+        customUrl={customUrl}
+        setOriginalUrl={setOriginalUrl}
+        setTtl={setTtl}
+        setCustomUrl={setCustomUrl}
+        handleSubmit={handleSubmit}
+      />
+      {shortUrl && <ResultBox shortUrl={shortUrl} />}
+      {message && <MessageBox message={message} />}
+      <UrlList allUrls={allUrls} handleGetAll= {handleGetAll} handleDelete={handleDelete} />
     </div>
   );
 };

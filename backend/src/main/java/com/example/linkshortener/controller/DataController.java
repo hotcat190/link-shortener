@@ -2,6 +2,7 @@ package com.example.linkshortener.controller;
 
 import com.example.linkshortener.data.dto.CreationRequest;
 import com.example.linkshortener.data.entity.Data;
+import com.example.linkshortener.service.CacheService;
 import com.example.linkshortener.service.DataService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,8 @@ import java.util.List;
 public final class DataController {
     @Autowired
     private DataService dataService;
-
+    @Autowired
+    private CacheService cacheService;
     @PostMapping("/create")
     public ResponseEntity<String> createShortUrl(
             @RequestBody CreationRequest request
@@ -36,6 +38,7 @@ public final class DataController {
     public ResponseEntity<String> getOriginalUrl(@PathVariable String shortenedUrl) {
         String originalUrl = dataService.findOrigin(shortenedUrl);
         if (originalUrl != null) {
+            cacheService.incrementClickCount(shortenedUrl); // Track clickCount 
             return ResponseEntity.ok(originalUrl);
         } else {
             return ResponseEntity.notFound().build();

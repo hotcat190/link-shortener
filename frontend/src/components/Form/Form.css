@@ -1,0 +1,57 @@
+.shorten-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    background: #f5f5f5;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+  
+  .url-input {
+    flex: 2;
+    min-width: 200px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  
+  .ttl-input,
+  .custom-input {
+    flex: 1;
+    min-width: 150px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  
+  .shorten-button {
+    padding: 10px 20px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s;
+  }
+  
+  .shorten-button:hover {
+    background: #0056b3;
+  }
+  
+  /* Responsive form */
+  @media (max-width: 600px) {
+    .shorten-form {
+      flex-direction: column;
+    }
+  
+    .url-input,
+    .ttl-input,
+    .custom-input {
+      width: 100%;
+    }
+  }
+  
