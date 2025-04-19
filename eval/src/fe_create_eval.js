@@ -47,23 +47,23 @@ function getRandomIp() {
   return `192.168.1.${Math.floor(Math.random() * 200)}`;
 }
 
-function getRandomPayload() {
-  const urlParam = "url=" + encodeURIComponent(getRandomUrl());
+function getBody() {
+  const url = getRandomUrl();
 
   const ttlMinute = getRandomTtlMinuteOrNull();
-  const ttlParam = ttlMinute ? `&ttlMinute=${ttlMinute}` : "";
 
   const customShortenedUrl = getRandomCustomShortenedUrlOrNull();
-  const customShortenedUrlParam = customShortenedUrl
-    ? `&customShortenedUrl=${encodeURIComponent(customShortenedUrl)}`
-    : "";
 
-  return urlParam + ttlParam + customShortenedUrlParam;
+  return {
+    url,
+    ttlMinute,
+    customShortenedUrl
+  };
 }
 
 export let options = {
   vus: 50,
-  duration: "60s",
+  duration: "1s",
 };
 
 http.setResponseCallback(http.expectedStatuses(200, 404, 409, 429));
@@ -71,18 +71,16 @@ http.setResponseCallback(http.expectedStatuses(200, 404, 409, 429));
 export default function () {
   const ip = getRandomIp();
 
-  const url = "http://localhost:8080/create";
+  const url = "http://localhost:8888/api";
 
-  const payload = getRandomPayload();
+  const body = getBody();
 
-  const params = {
+  let res = http.post(url, JSON.stringify(body), {
     headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
+      "Content-Type": "application/json",
       "X-Forwarded-For": ip,
     },
-  };
-
-  let res = http.post(url, payload, params);
+  });
 
   if (!(res.status === 200 || res.status === 404 || res.status === 429)) {
     fail(`Unexpected status code: ${res.status}`);

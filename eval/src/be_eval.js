@@ -1,15 +1,13 @@
 const Docker = require("dockerode");
 
-// Replace these with your actual values
 const DOCKER_HOST = "localhost";
-const DOCKER_PORT = 2375; // Default TCP port for Docker API (no TLS)
+const DOCKER_PORT = 2376;
 
-const APP_CONTAINER_NAME = "backend-app-1";
-const DB_CONTAINER_NAME = "backend-db-1";
+const APP_CONTAINER_NAME = "app";
+const DB_CONTAINER_NAME = "mysql";
 
 const docker = new Docker({
-  host: DOCKER_HOST,
-  port: DOCKER_PORT,
+  socketPath: "/home/lml/.docker/desktop/docker.sock",
 });
 
 const appContainer = docker.getContainer(APP_CONTAINER_NAME);
@@ -72,7 +70,7 @@ async function eval(totalRunTime) {
   };
 }
 
-eval(60000).then((result) => {
+eval(5000).then((result) => {
   console.log("----------------" + "Backend Evaluation" + "-----------------");
   console.log("Average CPU Usage   :", result.averageCpuUsage);
   console.log("Average Memory Usage:", result.averageMemoryUsage);

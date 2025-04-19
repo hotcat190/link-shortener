@@ -38,7 +38,7 @@ function getRandomId() {
 
 export let options = {
   vus: 50,
-  duration: "60s",
+  duration: "1s",
 };
 
 http.setResponseCallback(http.expectedStatuses(200, 404, 409, 429));
@@ -46,7 +46,7 @@ http.setResponseCallback(http.expectedStatuses(200, 404, 409, 429));
 export default function () {
   const ip = getRandomIp();
 
-  let res = http.get(`http://localhost:8080/short/${getRandomId()}`, {
+  let res = http.get(`http://localhost:8888/api/${getRandomId()}`, {
     headers: {
       "X-Forwarded-For": ip,
     },

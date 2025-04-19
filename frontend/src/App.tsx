@@ -7,6 +7,7 @@ import MessageBox from "./components/MessageBox/MessageBox.tsx";
 import ResultBox from "./components/ResultBox/ResultBox.tsx";
 import "./App.css";
 import CreationRequest from "./types/creationRequest.ts";
+import { BASE_URL } from "./constants.ts";
 
 interface UrlData {
   shortenedUrl: string;
@@ -23,7 +24,6 @@ const MainApp: React.FC = () => {
   const [allUrls, setAllUrls] = useState<UrlData[]>([]);
   const [message, setMessage] = useState("");
 
-  const baseApiUrl = "http://localhost";
 
   const handleShorten = async () => {
     try {
@@ -35,7 +35,7 @@ const MainApp: React.FC = () => {
 
       console.log("Request Body:", requestBody);
 
-      const response = await fetch(`${baseApiUrl}/create`, {
+      const response = await fetch(BASE_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(requestBody),
@@ -49,7 +49,7 @@ const MainApp: React.FC = () => {
       }
 
       if (response.ok) {
-        setShortUrl(`${baseApiUrl}/short/${responseText}`);
+        setShortUrl(`${BASE_URL}/${responseText}`);
         setMessage("URL shortened successfully!");
       } else {
         setMessage(
@@ -68,7 +68,7 @@ const MainApp: React.FC = () => {
 
   const handleGetAll = async () => {
     try {
-      const response = await fetch(`${baseApiUrl}/all`);
+      const response = await fetch(`${BASE_URL}/all`);
       const responseText = await response.text();
 
       if (response.status === 429) {
@@ -94,7 +94,7 @@ const MainApp: React.FC = () => {
   const handleDelete = async (shortenedUrl: string) => {
     try {
       const response = await fetch(
-        `${baseApiUrl}/delete?shortenedUrl=${shortenedUrl}`,
+        `${BASE_URL}/delete?shortenedUrl=${shortenedUrl}`,
         {
           method: "DELETE",
         }

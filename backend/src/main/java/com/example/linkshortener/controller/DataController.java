@@ -14,14 +14,15 @@ import java.util.List;
 
 @CrossOrigin(origins = "*") 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public final class DataController {
     @Autowired
     private DataService dataService;
     @Autowired
     private CacheService cacheService;
-    @PostMapping("/create")
+
+    @PostMapping
     public ResponseEntity<String> createShortUrl(
             @RequestBody CreationRequest request
     ) {
@@ -34,7 +35,7 @@ public final class DataController {
         }
     }
 
-    @GetMapping("/short/{shortenedUrl}")
+    @GetMapping("/{shortenedUrl}")
     public ResponseEntity<String> getOriginalUrl(@PathVariable String shortenedUrl) {
         String originalUrl = dataService.findOrigin(shortenedUrl);
         if (originalUrl != null) {
@@ -50,8 +51,8 @@ public final class DataController {
         return ResponseEntity.ok(dataService.findAll());
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<Void> deleteShortUrl(@RequestParam String shortenedUrl) {
+    @DeleteMapping("/{shortenedUrl}")
+    public ResponseEntity<Void> deleteShortUrl(@PathVariable String shortenedUrl) {
         dataService.deleteUrl(shortenedUrl);
         return ResponseEntity.noContent().build();
     }
