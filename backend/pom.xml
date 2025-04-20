@@ -81,6 +81,11 @@
 			<version>4.0.1</version> <!-- You can use a different version if needed -->
 			<scope>provided</scope> <!-- This ensures it's not included in the final build output -->
 		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>

@@ -56,4 +56,10 @@ public final class DataController {
         dataService.deleteUrl(shortenedUrl);
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping("/all")
+    public ResponseEntity<Void> deleteAllUrls() {
+        dataService.deleteAll();
+        return ResponseEntity.noContent().build();
+    }
 } 

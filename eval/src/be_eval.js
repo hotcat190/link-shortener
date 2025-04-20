@@ -1,13 +1,16 @@
 const Docker = require("dockerode");
 
-const DOCKER_HOST = "localhost";
-const DOCKER_PORT = 2376;
+const DOCKER_HOST = "192.168.1.173";
+const DOCKER_PORT = 2375;
 
 const APP_CONTAINER_NAME = "app";
 const DB_CONTAINER_NAME = "mysql";
 
 const docker = new Docker({
-  socketPath: "/home/lml/.docker/desktop/docker.sock",
+  // socketPath: "/var/run/docker.sock",
+  // socketPath: "/home/lml/.docker/desktop/docker.sock",
+  host: DOCKER_HOST,
+  port: DOCKER_PORT,
 });
 
 const appContainer = docker.getContainer(APP_CONTAINER_NAME);

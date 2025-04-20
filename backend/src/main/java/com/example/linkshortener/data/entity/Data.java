@@ -13,6 +13,9 @@ import java.time.LocalDateTime;
         name = "data",
         indexes = {
             @Index(name = "idx_shortened_url", columnList = "shortenedUrl")
+        },
+        uniqueConstraints = {
+            @UniqueConstraint(name = "uc_shortened_url", columnNames = "shortenedUrl")
         }
 )
 @Builder
