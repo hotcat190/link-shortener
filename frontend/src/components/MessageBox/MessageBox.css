@@ -1,17 +1,44 @@
 .message-box {
-    padding: 15px;
-    border-radius: 4px;
-    margin-bottom: 20px;
-    text-align: center;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 15px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  max-width: 300px;
+  text-align: center;
+  animation: slideIn 0.3s ease-out;
+}
+
+.message-box.success {
+  background: #d4edda;
+  color: #155724;
+}
+
+.message-box.error {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+/* Animation for sliding in */
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
   }
-  
-  .message-box.success {
-    background: #d4edda;
-    color: #155724;
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
   }
-  
-  .message-box.error {
-    background: #f8d7da;
-    color: #721c24;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .message-box {
+    top: 10px;
+    right: 10px;
+    max-width: 80%;
   }
-  
+}
