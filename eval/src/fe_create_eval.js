@@ -57,13 +57,13 @@ function getBody() {
   return {
     url,
     ttlMinute,
-    customShortenedUrl
+    customShortenedUrl,
   };
 }
 
 export let options = {
   vus: 50,
-  duration: "1s",
+  duration: "2s",
 };
 
 http.setResponseCallback(http.expectedStatuses(200, 404, 409, 429));

@@ -3,18 +3,14 @@ const Docker = require("dockerode");
 const DOCKER_HOST = "192.168.1.173";
 const DOCKER_PORT = 2375;
 
-const APP_CONTAINER_NAME = "app";
-const DB_CONTAINER_NAME = "mysql";
+const CONTAINER_NAMES = ["app", "mysql", "nginx", "redis"];
 
 const docker = new Docker({
   // socketPath: "/var/run/docker.sock",
-  // socketPath: "/home/lml/.docker/desktop/docker.sock",
-  host: DOCKER_HOST,
-  port: DOCKER_PORT,
+  socketPath: "/home/lml/.docker/desktop/docker.sock",
 });
 
-const appContainer = docker.getContainer(APP_CONTAINER_NAME);
-const dbContainer = docker.getContainer(DB_CONTAINER_NAME);
+const containers = CONTAINER_NAMES.map((name) => docker.getContainer(name));
 
 function getCpuUsageInPercent(stats) {
   const cpuDelta =
@@ -56,11 +52,17 @@ async function eval(totalRunTime) {
   let totalRequests = 0;
 
   while (Date.now() - startTime < totalRunTime) {
-    const appStats = await getContainerStats(appContainer);
-    const dbStats = await getContainerStats(dbContainer);
+    const containerStats = await Promise.all(
+      containers.map((container) => getContainerStats(container))
+    );
 
-    totalCpuUsage += appStats.cpu + dbStats.cpu;
-    totalMemoryUsage += appStats.memory + dbStats.memory;
+    const validStats = containerStats.filter((stats) => stats !== undefined);
+
+    totalCpuUsage += validStats.reduce((sum, stats) => sum + stats.cpu, 0);
+    totalMemoryUsage += validStats.reduce(
+      (sum, stats) => sum + stats.memory,
+      0
+    );
     totalRequests += 1;
   }
 

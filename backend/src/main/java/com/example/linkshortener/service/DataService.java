@@ -3,19 +3,18 @@ package com.example.linkshortener.service;
 import com.example.linkshortener.data.dto.CreationRequest;
 import com.example.linkshortener.data.entity.Data;
 import com.example.linkshortener.data.repository.DataRepository;
-import com.example.linkshortener.util.Base62;
+import com.example.linkshortener.util.CustomUUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.List;
-
+import java.util.Random;
 
 @Service
 public final class DataService {
-    private static final int MIN_LENGTH = 4;
-    private static final int MAX_LENGTH = 16;
 
     private final DataRepository dataRepository;
     private final CacheService cacheService;
@@ -84,9 +83,12 @@ public final class DataService {
             }
         } else {
             // Case 2: No custom shortened URL provided, generate a random one
-            data.setShortenedUrl("");
-            data = dataRepository.save(data);
-            data.setShortenedUrl(Base62.encode(data.getId()));
+            Random random = new SecureRandom();
+            String shortenedUrl = CustomUUID.random(random);
+            while (dataRepository.existsByShortenedUrl(shortenedUrl)) {
+                shortenedUrl = CustomUUID.random(random);
+            }
+            data.setShortenedUrl(shortenedUrl);
             dataRepository.save(data); // Save again to update the shortened URL
             cacheService.saveToCache(data.getShortenedUrl(), url, ttlMinute != null ? ttlMinute.toString() : null);
         }
