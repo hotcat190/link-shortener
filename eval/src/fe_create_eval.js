@@ -63,7 +63,7 @@ function getBody() {
 
 export let options = {
   vus: 50,
-  duration: "2s",
+  duration: "60s",
 };
 
 http.setResponseCallback(http.expectedStatuses(200, 404, 409, 429));

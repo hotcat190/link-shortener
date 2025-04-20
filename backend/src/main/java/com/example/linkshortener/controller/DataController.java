@@ -26,7 +26,6 @@ public final class DataController {
     public ResponseEntity<String> createShortUrl(
             @RequestBody CreationRequest request
     ) {
-        System.err.println("Creating short URL: " + request.getUrl());
         try {
             String shortenedUrl = dataService.shortenUrl(request);
             return ResponseEntity.ok(shortenedUrl);

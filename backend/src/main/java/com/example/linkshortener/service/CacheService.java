@@ -66,7 +66,7 @@ public class CacheService {
         redisTemplate.expire(key, 1, TimeUnit.HOURS); // Optional
     }
 
-    @Scheduled(fixedRate = 1 * 60 * 1000) // Every 1 minutes
+    @Scheduled(fixedRate = 60 * 1000) // Every 1 minutes
     public void syncClickCountsToDatabase() {
         Set<String> keys = redisTemplate.keys("clicks:*");
 

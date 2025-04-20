@@ -5,6 +5,7 @@ import com.example.linkshortener.data.entity.Data;
 import com.example.linkshortener.data.repository.DataRepository;
 import com.example.linkshortener.util.CustomUUID;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -25,13 +26,16 @@ public final class DataService {
         this.cacheService = cacheService;
     }
 
+    @Value("${cache.enabled:false}") // false is default if not set
+    private boolean cacheEnabled;
+
     public String findOrigin(String shortenedUrl) {
-        // find info from cache first
-        String cachedUrl = cacheService.getOriginalUrlFromCache(shortenedUrl);
-        if(cachedUrl != null){
-            System.out.println("URL retrieved from cache ^^");
-            //cacheService.incrementClickCount(shortenedUrl);
-            return cachedUrl;
+        // Find info from cache first
+        if (cacheEnabled) {
+            String cachedUrl = cacheService.getOriginalUrlFromCache(shortenedUrl);
+            if (cachedUrl != null){
+                return cachedUrl;
+            }
         }
 
         Data data = dataRepository.findByShortenedUrl(shortenedUrl).orElse(null);
@@ -43,8 +47,11 @@ public final class DataService {
                     data.getExpirationTime().isAfter(LocalDateTime.now())) {
                 data.setClickCount(data.getClickCount() + 1);
                 dataRepository.save(data);
-                cacheService.saveToCache(shortenedUrl, data.getUrl(), data.getExpirationTime() != null ? data.getExpirationTime().toString() : null);
 
+                if (cacheEnabled) {
+                    cacheService.saveToCache(shortenedUrl, data.getUrl(), data.getExpirationTime() != null ?
+                            data.getExpirationTime().toString() : null);
+                }
                 return data.getUrl();
             } else {
                 deleteUrl(shortenedUrl);
@@ -77,7 +84,6 @@ public final class DataService {
             try {
                 data.setShortenedUrl(customShortenedUrl.trim());
                 dataRepository.save(data);
-                cacheService.saveToCache(customShortenedUrl, url, ttlMinute != null ? ttlMinute.toString() : null);
             } catch (Exception e) {
                 throw new SQLIntegrityConstraintViolationException("Custom shortened URL already exists.");
             }
@@ -90,10 +96,13 @@ public final class DataService {
             }
             data.setShortenedUrl(shortenedUrl);
             dataRepository.save(data); // Save again to update the shortened URL
-            cacheService.saveToCache(data.getShortenedUrl(), url, ttlMinute != null ? ttlMinute.toString() : null);
         }
-       
-        return data.getShortenedUrl();
+
+        String shortenedUrl = data.getShortenedUrl();
+        if (cacheEnabled) {
+            cacheService.saveToCache(shortenedUrl, url, ttlMinute != null ? ttlMinute.toString() : null);
+        }
+        return shortenedUrl;
     }
 
    

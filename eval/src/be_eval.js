@@ -1,9 +1,9 @@
 const Docker = require("dockerode");
 
-const DOCKER_HOST = "192.168.1.173";
+const DOCKER_HOST = "localhost";
 const DOCKER_PORT = 2375;
 
-const CONTAINER_NAMES = ["app", "mysql", "nginx", "redis"];
+const CONTAINER_NAMES = ["app", "mysql", "redis", "nginx"];
 
 const docker = new Docker({
   // socketPath: "/var/run/docker.sock",
@@ -75,7 +75,7 @@ async function eval(totalRunTime) {
   };
 }
 
-eval(5000).then((result) => {
+eval(60000).then((result) => {
   console.log("----------------" + "Backend Evaluation" + "-----------------");
   console.log("Average CPU Usage   :", result.averageCpuUsage);
   console.log("Average Memory Usage:", result.averageMemoryUsage);
