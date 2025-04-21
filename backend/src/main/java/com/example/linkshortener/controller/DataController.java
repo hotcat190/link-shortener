@@ -46,8 +46,11 @@ public final class DataController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<Data>> getAllUrls() {
-        return ResponseEntity.ok(dataService.findAll());
+    public ResponseEntity<List<Data>> getAllUrls(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size
+    ) {
+        return ResponseEntity.ok(dataService.findAll(page, size));
     }
 
     @DeleteMapping("/{shortenedUrl}")

@@ -6,6 +6,7 @@ import com.example.linkshortener.data.repository.DataRepository;
 import com.example.linkshortener.util.CustomUUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -113,11 +114,11 @@ public final class DataService {
         cacheService.deleteFromCache(shortenedUrl); // Still delete from Redis just in case
     }
 
-    public List<Data> findAll() {
-        return dataRepository.findAll();
-    }
-
     public void deleteAll() {
         dataRepository.deleteAll();
+    }
+
+    public List<Data> findAll(int page, int size) {
+        return dataRepository.findAll(PageRequest.of(page, size)).getContent();
     }
 }
