@@ -231,6 +231,7 @@ body.dark-mode .app-footer {
   text-decoration: underline;
 }
 
+
 /* Responsive adjustments */
 @media (max-width: 600px) {
   .app-header {

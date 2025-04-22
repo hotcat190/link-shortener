@@ -12,6 +12,9 @@ interface UrlListProps {
   allUrls: UrlData[];
   handleGetAll: () => Promise<void>;
   handleDelete: (shortenedUrl: string) => Promise<void>;
+  currentPage: number;
+  setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
+  estimatedTotalPages: number;
 }
 
 enum SortKey {
@@ -54,6 +57,9 @@ const UrlList: React.FC<UrlListProps> = ({
   allUrls,
   handleGetAll,
   handleDelete,
+  currentPage,
+  setCurrentPage,
+  estimatedTotalPages,
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showUrls, setShowUrls] = useState(false);
@@ -224,6 +230,27 @@ const UrlList: React.FC<UrlListProps> = ({
               <p>Try adjusting your search or shortening a new URL!</p>
             </div>
           )}
+          <div className="pagination-controls">
+            <button
+              onClick={() => setCurrentPage((prev) => prev - 1)}
+              disabled={currentPage === 0}
+              className="pagination-button"
+              aria-label="Previous page"
+            >
+              Previous
+            </button>
+            <span>Page {currentPage + 1}</span>
+            <button
+              onClick={() => setCurrentPage((prev) => prev + 1)}
+              disabled={currentPage >= estimatedTotalPages - 1}
+              className="pagination-button"
+              aria-label="Next page"
+            >
+              {currentPage >= estimatedTotalPages - 1
+                ? "No more pages 😅"
+                : "Next"}
+            </button>
+          </div>
         </div>
       )}
     </div>

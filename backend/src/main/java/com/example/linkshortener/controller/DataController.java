@@ -52,7 +52,6 @@ public final class DataController {
     ) {
         return ResponseEntity.ok(dataService.findAll(page, size));
     }
-
     @DeleteMapping("/{shortenedUrl}")
     public ResponseEntity<Void> deleteShortUrl(@PathVariable String shortenedUrl) {
         dataService.deleteUrl(shortenedUrl);

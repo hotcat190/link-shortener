@@ -9,4 +9,5 @@ public interface DataRepository extends JpaRepository<Data, Long> {
     Optional<Data> findByShortenedUrl(String shortenedUrl);
 
     boolean existsByShortenedUrl(String shortenedUrl);
+
 }

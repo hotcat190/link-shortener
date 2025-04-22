@@ -35,6 +35,9 @@ const MainApp: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(
     localStorage.getItem("theme") === "dark"
   );
+  const [currentPage, setCurrentPage] = useState(0);
+  const [pageSize] = useState(10);
+  const [estimatedTotalPages, setEstimatedTotalPages] = useState(1);
 
   // Toggle dark mode
   useEffect(() => {
@@ -82,7 +85,7 @@ const MainApp: React.FC = () => {
 
       if (response.status === 429) {
         setMessage("Rate limit exceeded. Please try again later.");
-        logAction("Failed to shorten URL: Rate limit exceeded");
+        //logAction("Failed to shorten URL: Rate limit exceeded");
         return;
       }
 
@@ -90,6 +93,10 @@ const MainApp: React.FC = () => {
         setShortUrl(`${BASE_URL}/${responseText}`);
         setMessage("URL shortened successfully!");
         logAction(`Shortened URL: ${url}`);
+        setOriginalUrl("");
+        setTtl("");
+        setCustomUrl("");
+        setCurrentPage(0); // Reset to first page
       } else {
         try {
           const errorData = JSON.parse(responseText);
@@ -99,13 +106,13 @@ const MainApp: React.FC = () => {
             `Error shortening URL: ${response.status} - ${responseText}`
           );
         }
-        logAction(`Failed to shorten URL: ${response.status}`);
+        //logAction(`Failed to shorten URL: ${response.status}`);
       }
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
       setMessage(`Error connecting to server: ${errorMessage}`);
-      logAction(`Failed to shorten URL: ${errorMessage}`);
+      //logAction(`Failed to shorten URL: ${errorMessage}`);
     } finally {
       setIsSubmitting(false);
       setIsLoading(false);
@@ -115,19 +122,28 @@ const MainApp: React.FC = () => {
   const handleGetAll = useCallback(async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`${BASE_URL}/all`);
+      const queryParams = new URLSearchParams({
+        page: currentPage.toString(),
+        size: pageSize.toString(),
+      });
+      const response = await fetch(`${BASE_URL}/all?${queryParams.toString()}`);
       const responseText = await response.text();
 
       if (response.status === 429) {
         setMessage("Rate limit exceeded. Please try again later.");
-        logAction("Failed to fetch URLs: Rate limit exceeded");
+        //logAction("Failed to fetch URLs: Rate limit exceeded");
         return;
       }
 
       if (response.ok) {
         const urls: UrlData[] = JSON.parse(responseText);
         setAllUrls(urls);
-        logAction("Fetched all URLs");
+        // Estimate totalPages: if fewer than pageSize, assume last page
+        const isLastPage = urls.length < pageSize;
+        setEstimatedTotalPages((prev) =>
+          isLastPage ? currentPage + 1 : Math.max(prev, currentPage + 2)
+        );
+        //logAction(`Fetched URLs (page ${currentPage + 1})`);
       } else {
         setMessage(`Error fetching URLs: ${response.status} - ${responseText}`);
         logAction(`Failed to fetch URLs: ${response.status}`);
@@ -136,11 +152,11 @@ const MainApp: React.FC = () => {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
       setMessage(`Error fetching URLs: ${errorMessage}`);
-      logAction(`Failed to fetch URLs: ${errorMessage}`);
+      //logAction(`Failed to fetch URLs: ${errorMessage}`);
     } finally {
       setIsLoading(false);
     }
-  }, [logAction]);
+  }, [currentPage, pageSize, logAction]);
 
   const handleDelete = useCallback(
     async (shortenedUrl: string) => {
@@ -159,7 +175,7 @@ const MainApp: React.FC = () => {
         if (response.ok) {
           setMessage("URL deleted successfully");
           logAction(`Deleted URL: ${shortenedUrl}`);
-          await handleGetAll();
+          setCurrentPage(0); // Reset to first page
         } else {
           const responseText = await response.text();
           setMessage(
@@ -176,16 +192,15 @@ const MainApp: React.FC = () => {
         setIsLoading(false);
       }
     },
-    [logAction, handleGetAll]
+    [logAction]
   );
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
       await handleShorten();
-      await handleGetAll();
     },
-    [handleShorten, handleGetAll]
+    [handleShorten]
   );
 
   const handleShare = useCallback(async () => {
@@ -202,6 +217,11 @@ const MainApp: React.FC = () => {
       }
     }
   }, [shortUrl, logAction]);
+
+  // Fetch URLs when page changes
+  useEffect(() => {
+    handleGetAll();
+  }, [currentPage, handleGetAll]);
 
   return (
     <div className={`app ${isDarkMode ? "dark" : ""}`}>
@@ -257,7 +277,11 @@ const MainApp: React.FC = () => {
             allUrls={allUrls}
             handleGetAll={handleGetAll}
             handleDelete={handleDelete}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            estimatedTotalPages={estimatedTotalPages}
           />
+
           {actionLog.length > 0 && (
             <section className="action-log">
               <h3>Recent Actions</h3>

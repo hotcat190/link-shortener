@@ -121,4 +121,5 @@ public final class DataService {
     public List<Data> findAll(int page, int size) {
         return dataRepository.findAll(PageRequest.of(page, size)).getContent();
     }
+
 }
