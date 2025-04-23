@@ -7,7 +7,8 @@ import MessageBox from "./components/MessageBox/MessageBox.tsx";
 import ResultBox from "./components/ResultBox/ResultBox.tsx";
 import "./App.css";
 import CreationRequest from "./types/creationRequest.ts";
-import { BASE_BACKEND_URL } from "./constants.ts";
+import { BASE_BACKEND_URL, BASE_FRONTEND_URL } from "./constants.ts";
+import { QRCodeSVG } from "qrcode.react";
 
 interface UrlData {
   shortenedUrl: string;
@@ -237,6 +238,16 @@ const MainApp: React.FC = () => {
       <header className="app-header">
         <div className="container">
           <h1>🔗 URL Shortener</h1>
+          <QRCodeSVG
+            value={BASE_FRONTEND_URL}
+            size={120}
+            bgColor="#ffffff"
+            fgColor="#1f2937"
+            level="M"
+            includeMargin
+            aria-label="QR code for shortened URL"
+          />
+
           <button
             onClick={() => setIsDarkMode(!isDarkMode)}
             className="theme-toggle"
