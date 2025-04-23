@@ -61,7 +61,7 @@ const ResultBox: React.FC<ResultBoxProps> = ({ shortUrl, logAction }) => {
         <p className="result-text">
           Shortened URL:{" "}
           <a
-            href={shortUrl}
+            href={`/redirect/${shortUrl}`}
             target="_blank"
             rel="noopener noreferrer"
             className="result-link"
@@ -101,7 +101,7 @@ const ResultBox: React.FC<ResultBoxProps> = ({ shortUrl, logAction }) => {
       </div>
       <div className="qr-code">
         <QRCodeSVG
-          value={shortUrl}
+          value={`http://192.168.1.10:5173/redirect/${shortUrl}`}
           size={120}
           bgColor="#ffffff"
           fgColor="#1f2937"

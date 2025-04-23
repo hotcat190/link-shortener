@@ -90,7 +90,7 @@ const MainApp: React.FC = () => {
       }
 
       if (response.ok) {
-        setShortUrl(`${BASE_URL}/${responseText}`);
+        setShortUrl(`${responseText}`);
         setMessage("URL shortened successfully!");
         logAction(`Shortened URL: ${url}`);
         setOriginalUrl("");

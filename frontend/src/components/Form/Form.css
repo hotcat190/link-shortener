@@ -55,6 +55,7 @@
 }
 
 .form-actions {
+  padding-top: 21px;
   display: flex;
   gap: 12px;
   align-items: center;
