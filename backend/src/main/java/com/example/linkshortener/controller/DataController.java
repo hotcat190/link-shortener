@@ -4,6 +4,7 @@ import com.example.linkshortener.data.dto.CreationRequest;
 import com.example.linkshortener.data.entity.Data;
 import com.example.linkshortener.service.CacheService;
 import com.example.linkshortener.service.DataService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public final class DataController {
 
     @PostMapping
     public ResponseEntity<String> createShortUrl(
-            @RequestBody CreationRequest request
+           @Valid @RequestBody CreationRequest request
     ) {
         try {
             String shortenedUrl = dataService.shortenUrl(request);

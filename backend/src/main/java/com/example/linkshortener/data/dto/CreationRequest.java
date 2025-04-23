@@ -1,7 +1,7 @@
 package com.example.linkshortener.data.dto;
 
-import com.example.linkshortener.util.NullOrNotBlank;
-import com.example.linkshortener.util.NullOrPositive;
+import com.example.linkshortener.util.validation.NullOrNotBlank;
+import com.example.linkshortener.util.validation.NullOrPositive;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;

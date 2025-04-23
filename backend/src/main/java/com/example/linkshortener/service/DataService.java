@@ -67,6 +67,7 @@ public final class DataService {
 
 
     public String shortenUrl(CreationRequest request) throws SQLIntegrityConstraintViolationException {
+        System.err.println(request);
         String url = request.getUrl();
         Long ttlMinute = request.getTtlMinute();
         String customShortenedUrl = request.getCustomShortenedUrl();
@@ -83,6 +84,7 @@ public final class DataService {
                 .build();
 
         if (customShortenedUrl != null) {
+            System.err.println("Custom shortened URL: " + customShortenedUrl);
             // Case 1: Custom shortened URL is provided
             try {
                 data.setShortenedUrl(customShortenedUrl.trim());

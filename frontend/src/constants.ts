@@ -1,1 +1,2 @@
-export const BASE_URL = "http://192.168.1.10:8888/api";
+export const BASE_BACKEND_URL = `/api`;
+export const BASE_FRONTEND_URL = `http://${__LOCAL_IP__}:5173`;

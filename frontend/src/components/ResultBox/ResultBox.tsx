@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { QRCodeSVG } from "qrcode.react"; // Fixed: Use QRCodeSVG for SVG rendering
 import "./ResultBox.css";
+import { BASE_FRONTEND_URL } from "../../constants";
 
 interface ResultBoxProps {
   shortUrl: string;
@@ -101,7 +102,7 @@ const ResultBox: React.FC<ResultBoxProps> = ({ shortUrl, logAction }) => {
       </div>
       <div className="qr-code">
         <QRCodeSVG
-          value={`http://192.168.1.10:5173/redirect/${shortUrl}`}
+          value={`${BASE_FRONTEND_URL}/redirect/${shortUrl}`}
           size={120}
           bgColor="#ffffff"
           fgColor="#1f2937"

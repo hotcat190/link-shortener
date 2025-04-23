@@ -1,8 +1,6 @@
-package com.example.linkshortener.util;
+package com.example.linkshortener.util.validation;
 
 import jakarta.validation.Constraint;
-import jakarta.validation.ConstraintValidator;
-import jakarta.validation.ConstraintValidatorContext;
 import jakarta.validation.Payload;
 
 import java.lang.annotation.*;
@@ -17,9 +15,3 @@ public @interface NullOrNotBlank {
     Class<? extends Payload>[] payload() default {};
 }
 
-class NullOrNotBlankValidator implements ConstraintValidator<NullOrNotBlank, String> {
-    @Override
-    public boolean isValid(String value, ConstraintValidatorContext context) {
-        return value == null || !value.trim().isEmpty();
-    }
-}

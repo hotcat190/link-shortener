@@ -7,7 +7,7 @@ import MessageBox from "./components/MessageBox/MessageBox.tsx";
 import ResultBox from "./components/ResultBox/ResultBox.tsx";
 import "./App.css";
 import CreationRequest from "./types/creationRequest.ts";
-import { BASE_URL } from "./constants.ts";
+import { BASE_BACKEND_URL } from "./constants.ts";
 
 interface UrlData {
   shortenedUrl: string;
@@ -69,13 +69,14 @@ const MainApp: React.FC = () => {
     setIsSubmitting(true);
     setIsLoading(true);
     try {
+      console.log("Base URL:", BASE_BACKEND_URL);
       const requestBody: CreationRequest = {
         url,
         ttlMinute: ttl ? parseInt(ttl) : null,
-        customShortenedUrl: customUrl,
+        customShortenedUrl: customUrl ? customUrl : null,
       };
 
-      const response = await fetch(BASE_URL, {
+      const response = await fetch(BASE_BACKEND_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(requestBody),
@@ -126,7 +127,9 @@ const MainApp: React.FC = () => {
         page: currentPage.toString(),
         size: pageSize.toString(),
       });
-      const response = await fetch(`${BASE_URL}/all?${queryParams.toString()}`);
+      const response = await fetch(
+        `${BASE_BACKEND_URL}/all?${queryParams.toString()}`
+      );
       const responseText = await response.text();
 
       if (response.status === 429) {
@@ -145,13 +148,17 @@ const MainApp: React.FC = () => {
         );
         //logAction(`Fetched URLs (page ${currentPage + 1})`);
       } else {
-        setMessage(`Error fetching URLs: ${response.status} - ${responseText}`);
+        setMessage(
+          `Error fetching URLs from ${BASE_BACKEND_URL} ${response.status} - ${responseText}`
+        );
         logAction(`Failed to fetch URLs: ${response.status}`);
       }
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      setMessage(`Error fetching URLs: ${errorMessage}`);
+      setMessage(
+        `Error fetching URLs from ${BASE_BACKEND_URL}: ${errorMessage}`
+      );
       //logAction(`Failed to fetch URLs: ${errorMessage}`);
     } finally {
       setIsLoading(false);
@@ -162,7 +169,7 @@ const MainApp: React.FC = () => {
     async (shortenedUrl: string) => {
       setIsLoading(true);
       try {
-        const response = await fetch(`${BASE_URL}/${shortenedUrl}`, {
+        const response = await fetch(`${BASE_BACKEND_URL}/${shortenedUrl}`, {
           method: "DELETE",
         });
 
