@@ -16,7 +16,6 @@ public class LoggingFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-
         // Log request details
         logger.info("Request Method: {} | URL: {}", request.getMethod(), request.getRequestURI());
 
@@ -25,7 +24,7 @@ public class LoggingFilter extends OncePerRequestFilter {
         long duration = System.currentTimeMillis() - startTime;
 
         // Log response details
-        logger.info("Response Status: {} | Duration: {}ms", String.valueOf(response.getStatus()), String.valueOf(duration));
+        logger.info("Response Status: {} | Duration: {}ms", response.getStatus(), duration);
 
     }
 }
