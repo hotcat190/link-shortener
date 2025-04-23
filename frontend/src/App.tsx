@@ -181,6 +181,7 @@ const MainApp: React.FC = () => {
 
         if (response.ok) {
           setMessage("URL deleted successfully");
+          await handleGetAll();
           logAction(`Deleted URL: ${shortenedUrl}`);
           setCurrentPage(0); // Reset to first page
         } else {
@@ -199,15 +200,16 @@ const MainApp: React.FC = () => {
         setIsLoading(false);
       }
     },
-    [logAction]
+    [logAction, handleGetAll]
   );
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
       await handleShorten();
+      await handleGetAll();
     },
-    [handleShorten]
+    [handleShorten, handleGetAll]
   );
 
   const handleShare = useCallback(async () => {
