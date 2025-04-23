@@ -62,8 +62,8 @@ function getBody() {
 }
 
 export let options = {
-  vus: 50,
-  duration: "60s",
+  vus: parseInt(__ENV.VUS || "50"),
+  duration: __ENV.DURATION || "60s",
 };
 
 http.setResponseCallback(http.expectedStatuses(200, 404, 409, 429));

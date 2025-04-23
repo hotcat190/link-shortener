@@ -1,4 +1,5 @@
 const Docker = require("dockerode");
+const fs = require("fs");
 
 const DOCKER_HOST = "localhost";
 const DOCKER_PORT = 2375;
@@ -6,7 +7,6 @@ const DOCKER_PORT = 2375;
 const CONTAINER_NAMES = ["app", "mysql", "redis", "nginx"];
 
 const docker = new Docker({
-  // socketPath: "/var/run/docker.sock",
   socketPath: "/home/lml/.docker/desktop/docker.sock",
 });
 
@@ -76,7 +76,19 @@ async function eval(totalRunTime) {
 }
 
 eval(60000).then((result) => {
-  console.log("----------------" + "Backend Evaluation" + "-----------------");
-  console.log("Average CPU Usage   :", result.averageCpuUsage);
-  console.log("Average Memory Usage:", result.averageMemoryUsage);
+  const logFilePath =
+    "/home/lml/Code/Java/link-shortener/eval/results/logs/be.log";
+
+  const logData = [
+    "----------------" + "Backend Evaluation" + "-----------------",
+    "Average CPU Usage   : " + result.averageCpuUsage,
+    "Average Memory Usage: " + result.averageMemoryUsage,
+    "",
+  ].join("\n");
+
+  fs.appendFile(logFilePath, logData + "\n", (err) => {
+    if (err) {
+      console.error("Error writing to log file:", err);
+    }
+  });
 });

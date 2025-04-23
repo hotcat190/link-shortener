@@ -4,26 +4,26 @@ import { fail, sleep } from "k6";
 // Sample shortened url ids for testing
 // Please replace with your own ids if needed
 const sampleValidIds = [
-  "vPGncM3gb4P",
-  "XusHL",
-  "custom-8zg5nz68yr",
-  "custom-78fj6f4ez7b",
-  "aBe6DsxhCTVc5",
-  "WXGfN9t",
-  "custom-3owyea5ful6",
-  "custom-8pmp3zb5skp",
-  "custom-kitxmnpb9c",
-  "ziksY4jwz9d",
-  "custom-atcipn01dcd",
-  "custom-53bcxr4lwu8",
-  "custom-sw9f382spf",
-  "kykOB0",
-  "custom-wfrb3ruyceb",
-  "custom-lqt859jaw3q",
-  "custom-kfun1kl2s5n",
-  "ISlxfFU",
-  "custom-d74k1d96g0u",
-  "custom-93y2bq183ws",
+  "custom-bx16aellkbo",
+  "2epE39Theaurt",
+  "custom-tsg5ngiiwj",
+  "nXwYdslernE",
+  "custom-nmkdwbe2zn",
+  "custom-jidmld2eish",
+  "custom-w0y5u8tr35",
+  "custom-gdbtuo02p57",
+  "custom-fp8ww4rlab",
+  "5TXMTIWr5zbsOsQ",
+  "SbhEWaIp3Wyh9",
+  "custom-jsovfy5dbjr",
+  "sRAVm",
+  "SQfkTUgMWI1e",
+  "custom-fymm23vr7ra",
+  "custom-u82nd8d3p4",
+  "L9a6fziuyW",
+  "YFzX",
+  "custom-7yb3x7oqyn7",
+  "Qim87NG",
 ];
 
 const sampleUrls = [
@@ -96,8 +96,8 @@ function getBody() {
 }
 
 export let options = {
-  vus: 50,
-  duration: "60s",
+  vus: parseInt(__ENV.VUS || "50"),
+  duration: __ENV.DURATION || "60s",
 };
 
 http.setResponseCallback(http.expectedStatuses(200, 404, 409, 429));
