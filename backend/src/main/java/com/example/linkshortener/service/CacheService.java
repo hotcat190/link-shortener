@@ -27,18 +27,17 @@ public class CacheService {
     }
 
     // Save URL to cache
-    public void saveToCache(String shortenedUrl, String originalUrl, String ttl) {
+    public void saveToCache(String shortenedUrl, String originalUrl, Long ttlSecond) {
         String key = "url:" + shortenedUrl;
 
         // Save the URL and other attributes to the Redis hash
         hashOps.put(key, "url", originalUrl);
         // Optionally, store other data (creation time, expiration) in separate fields
         // Set expiration for the key (optional)
-        if (ttl != null) {
-            hashOps.put(key, "ttl", ttl);
-            redisTemplate.expire(key, Long.parseLong(ttl), TimeUnit.MINUTES);
+        if (ttlSecond != null) {
+            redisTemplate.expire(key, ttlSecond, TimeUnit.SECONDS);
         } else {
-            // If there's no ttl, remove any expiration on the key, making it persist indefinitely
+            // If there's no ttlSecond, remove any expiration on the key, making it persist indefinitely
             redisTemplate.persist(key);  // This removes the TTL (sets it to never expire)
         }
     }

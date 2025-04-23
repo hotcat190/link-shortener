@@ -3,12 +3,18 @@
   "version": "1.0.0",
   "scripts": {
     "be": "node src/be_eval.js",
-    "fe_get": "k6 run src/fe_get_eval.js",
-    "fe_create": "k6 run src/fe_create_eval.js",
-    "fe_both": "k6 run src/fe_both_eval.js",
+    "fe_get": "k6 run src/fe_get_eval.js > results/logs/fe_get.log",
+    "fe_create": "k6 run src/fe_create_eval.js > results/logs/fe_create.log",
+    "fe_both": "k6 run src/fe_both_eval.js > results/logs/fe_both.log",
+    "fe_get_500": "k6 run src/fe_get_eval.js -e VUS=500 > results/logs/fe_get_500.log",
+    "fe_create_500": "k6 run src/fe_create_eval.js -e VUS=500 > results/logs/fe_create_500.log",
+    "fe_both_500": "k6 run src/fe_both_eval.js -e VUS=500 > results/logs/fe_both_500.log",
     "eval_get": "run-p be fe_get",
     "eval_create": "run-p be fe_create",
-    "eval_both": "run-p be fe_both"
+    "eval_both": "run-p be fe_both",
+    "eval_get_500": "run-p be fe_get_500",
+    "eval_create_500": "run-p be fe_create_500",
+    "eval_both_500": "run-p be fe_both_500"
   },
   "dependencies": {
     "dockerode": "^4.0.5",
@@ -17,5 +23,5 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "Updated evaluation scripts for logging."
 }

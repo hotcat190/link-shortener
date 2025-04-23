@@ -4,6 +4,7 @@ import com.example.linkshortener.data.dto.CreationRequest;
 import com.example.linkshortener.data.entity.Data;
 import com.example.linkshortener.data.repository.DataRepository;
 import com.example.linkshortener.util.CustomUUID;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -11,24 +12,23 @@ import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
 
 @Service
+@RequiredArgsConstructor
 public final class DataService {
-
+    @Autowired
     private final DataRepository dataRepository;
-    private final CacheService cacheService;
 
     @Autowired
-    public DataService(DataRepository dataRepository, CacheService cacheService) {
-        this.dataRepository = dataRepository;
-        this.cacheService = cacheService;
-    }
+    private final CacheService cacheService;
 
     @Value("${cache.enabled:false}") // false is default if not set
     private boolean cacheEnabled;
+
 
     public String findOrigin(String shortenedUrl) {
         // Find info from cache first
@@ -50,8 +50,10 @@ public final class DataService {
                 dataRepository.save(data);
 
                 if (cacheEnabled) {
-                    cacheService.saveToCache(shortenedUrl, data.getUrl(), data.getExpirationTime() != null ?
-                            data.getExpirationTime().toString() : null);
+                    LocalDateTime now = LocalDateTime.now();
+                    LocalDateTime expTime = data.getExpirationTime();
+                    cacheService.saveToCache(shortenedUrl, data.getUrl(), expTime != null ?
+                            Duration.between(expTime, now).toSeconds() : null);
                 }
                 return data.getUrl();
             } else {
@@ -80,7 +82,7 @@ public final class DataService {
                 .clickCount(0)
                 .build();
 
-        if (customShortenedUrl != null && !customShortenedUrl.trim().isEmpty()) {
+        if (customShortenedUrl != null) {
             // Case 1: Custom shortened URL is provided
             try {
                 data.setShortenedUrl(customShortenedUrl.trim());
@@ -101,7 +103,7 @@ public final class DataService {
 
         String shortenedUrl = data.getShortenedUrl();
         if (cacheEnabled) {
-            cacheService.saveToCache(shortenedUrl, url, ttlMinute != null ? ttlMinute.toString() : null);
+            cacheService.saveToCache(shortenedUrl, url, ttlMinute != null ? ttlMinute * 60 : null);
         }
         return shortenedUrl;
     }
