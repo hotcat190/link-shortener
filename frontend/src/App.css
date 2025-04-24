@@ -308,8 +308,8 @@ body.dark-mode .action-log li span {
 }
 
 body.dark-mode .app-footer {
-  background: #374151;
-  color: #d1d5db;
+  background: linear-gradient(135deg, #047857, #065f46);
+  color: #d1fae5;
 }
 
 .app-footer .container {
