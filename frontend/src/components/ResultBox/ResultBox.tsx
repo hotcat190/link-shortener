@@ -1,16 +1,19 @@
 import { useState, useCallback } from "react";
-import { QRCodeSVG } from "qrcode.react"; // Fixed: Use QRCodeSVG for SVG rendering
+import { QRCodeSVG } from "qrcode.react";
 import "./ResultBox.css";
 import { BASE_FRONTEND_URL } from "../../constants";
 
 interface ResultBoxProps {
   shortUrl: string;
-  logAction?: (message: string) => void; // Optional prop to integrate with MainApp's action log
+  logAction?: (message: string) => void;
 }
 
 const ResultBox: React.FC<ResultBoxProps> = ({ shortUrl, logAction }) => {
   const [copied, setCopied] = useState(false);
   const [downloadError, setDownloadError] = useState("");
+
+  // Extract shortId from shortUrl
+  const shortId = shortUrl.replace(`${BASE_FRONTEND_URL}/redirect/`, "");
 
   // Handle copying the URL to clipboard
   const handleCopy = useCallback(async () => {
@@ -34,7 +37,7 @@ const ResultBox: React.FC<ResultBoxProps> = ({ shortUrl, logAction }) => {
       const ctx = canvas.getContext("2d");
       const img = new Image();
       img.onload = () => {
-        canvas.width = img.width * 2; // Improve resolution
+        canvas.width = img.width * 2;
         canvas.height = img.height * 2;
         ctx?.drawImage(img, 0, 0, img.width * 2, img.height * 2);
         const link = document.createElement("a");
@@ -62,7 +65,7 @@ const ResultBox: React.FC<ResultBoxProps> = ({ shortUrl, logAction }) => {
         <p className="result-text">
           Shortened URL:{" "}
           <a
-            href={`/redirect/${shortUrl}`}
+            href={`${BASE_FRONTEND_URL}/redirect/${shortId}`}
             target="_blank"
             rel="noopener noreferrer"
             className="result-link"
@@ -102,7 +105,7 @@ const ResultBox: React.FC<ResultBoxProps> = ({ shortUrl, logAction }) => {
       </div>
       <div className="qr-code">
         <QRCodeSVG
-          value={`${BASE_FRONTEND_URL}/redirect/${shortUrl}`}
+          value={`${BASE_FRONTEND_URL}/redirect/${shortId}`}
           size={120}
           bgColor="#ffffff"
           fgColor="#1f2937"

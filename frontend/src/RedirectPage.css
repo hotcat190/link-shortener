@@ -1,0 +1,237 @@
+/* Container for the entire page */
+.redirect-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f9fafb;
+    padding: 16px;
+}
+
+/* Dark mode for page container */
+body.dark-mode .redirect-page {
+    background: #1f2937;
+}
+
+/* Card container */
+.redirect-card {
+    max-width: 448px;
+    width: 100%;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    padding: 32px;
+    text-align: center;
+}
+
+/* Dark mode for card */
+body.dark-mode .redirect-card {
+    background: #374151;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+/* Heading */
+.redirect-heading {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 16px;
+}
+
+/* Dark mode for heading */
+body.dark-mode .redirect-heading {
+    color: #d1d5db;
+}
+
+/* Error message */
+.error-message {
+    color: #ef4444;
+    font-size: 16px;
+    margin-bottom: 24px;
+    word-break: break-word;
+}
+
+/* Dark mode for error message */
+body.dark-mode .error-message {
+    color: #f87171;
+}
+
+/* URL link */
+.url-link {
+    color: #2563eb;
+    font-size: 16px;
+    text-decoration: none;
+    word-break: break-word;
+    margin-bottom: 24px;
+    display: inline-block;
+}
+
+.url-link:hover {
+    text-decoration: underline;
+}
+
+/* Dark mode for URL link */
+body.dark-mode .url-link {
+    color: #60a5fa;
+}
+
+/* Loading text */
+.loading-text {
+    color: #6b7280;
+    font-size: 16px;
+}
+
+/* Dark mode for loading text */
+body.dark-mode .loading-text {
+    color: #9ca3af;
+}
+
+/* Button container */
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+}
+
+/* Generic button styles */
+.redirect-button,
+.copy-button,
+.retry-button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s, box-shadow 0.2s;
+}
+
+/* Retry and Redirect buttons */
+.retry-button,
+.redirect-button {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: #ffffff;
+}
+
+.retry-button:hover,
+.redirect-button:hover {
+    background: linear-gradient(135deg, #059669, #047857);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+}
+
+/* Dark mode for retry and redirect buttons */
+body.dark-mode .retry-button,
+body.dark-mode .redirect-button {
+    background: linear-gradient(135deg, #047857, #059669);
+}
+
+body.dark-mode .retry-button:hover,
+body.dark-mode .redirect-button:hover {
+    background: linear-gradient(135deg, #059669, #10b981);
+}
+
+/* Copy button */
+.copy-button {
+    position: relative;
+    background: #e5e7eb;
+    color: #374151;
+}
+
+.copy-button:hover {
+    background: #d1d5db;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Dark mode for copy button */
+body.dark-mode .copy-button {
+    background: #4b5563;
+    color: #d1d5db;
+}
+
+body.dark-mode .copy-button:hover {
+    background: #6b7280;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Copy tooltip */
+.copy-tooltip {
+    position: absolute;
+    top: -32px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1f2937;
+    color: #ffffff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    animation: fadeInTooltip 0.3s ease-out forwards;
+}
+
+/* Dark mode for tooltip */
+body.dark-mode .copy-tooltip {
+    background: #4b5563;
+}
+
+/* Tooltip animation */
+@keyframes fadeInTooltip {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+/* Loading spinner */
+.spinner {
+    width: 32px;
+    height: 32px;
+    border: 4px solid #d1fae5;
+    border-top: 4px solid #10b981;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 16px;
+}
+
+/* Dark mode for spinner */
+body.dark-mode .spinner {
+    border: 4px solid #064e3b;
+    border-top: 4px solid #10b981;
+}
+
+/* Spinner animation */
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .redirect-card {
+        padding: 24px;
+        max-width: 100%;
+    }
+
+    .redirect-heading {
+        font-size: 20px;
+    }
+
+    .button-group {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .redirect-button,
+    .copy-button,
+    .retry-button {
+        width: 100%;
+    }
+}

@@ -40,13 +40,11 @@ const MainApp: React.FC = () => {
   const [pageSize] = useState(10);
   const [estimatedTotalPages, setEstimatedTotalPages] = useState(1);
 
-  // Toggle dark mode
   useEffect(() => {
     document.body.classList.toggle("dark-mode", isDarkMode);
     localStorage.setItem("theme", isDarkMode ? "dark" : "light");
   }, [isDarkMode]);
 
-  // Auto-dismiss message after 3 seconds
   useEffect(() => {
     if (message) {
       const timer = setTimeout(() => setMessage(""), 3000);
@@ -54,7 +52,6 @@ const MainApp: React.FC = () => {
     }
   }, [message]);
 
-  // Log actions
   const logAction = useCallback((actionMessage: string) => {
     setActionLog((prev) => [
       {
@@ -65,62 +62,6 @@ const MainApp: React.FC = () => {
       ...prev.slice(0, 4), // Keep last 5 actions
     ]);
   }, []);
-
-  const handleShorten = useCallback(async () => {
-    setIsSubmitting(true);
-    setIsLoading(true);
-    try {
-      console.log("Base URL:", BASE_BACKEND_URL);
-      const requestBody: CreationRequest = {
-        url,
-        ttlMinute: ttl ? parseInt(ttl) : null,
-        customShortenedUrl: customUrl ? customUrl : null,
-      };
-
-      const response = await fetch(BASE_BACKEND_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(requestBody),
-      });
-
-      const responseText = await response.text();
-
-      if (response.status === 429) {
-        setMessage("Rate limit exceeded. Please try again later.");
-        //logAction("Failed to shorten URL: Rate limit exceeded");
-        return;
-      }
-
-      if (response.ok) {
-        setShortUrl(`${responseText}`);
-        setMessage("URL shortened successfully!");
-        logAction(`Shortened URL: ${url}`);
-        setOriginalUrl("");
-        setTtl("");
-        setCustomUrl("");
-        setCurrentPage(0); // Reset to first page
-      } else {
-        try {
-          const errorData = JSON.parse(responseText);
-          setMessage(`Error: ${errorData.error || responseText}`);
-        } catch {
-          setMessage(
-            `Error shortening URL: ${response.status} - ${responseText}`
-          );
-        }
-        //logAction(`Failed to shorten URL: ${response.status}`);
-      }
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : String(error);
-      setMessage(`Error connecting to server: ${errorMessage}`);
-      //logAction(`Failed to shorten URL: ${errorMessage}`);
-    } finally {
-      setIsSubmitting(false);
-      setIsLoading(false);
-    }
-  }, [url, ttl, customUrl, logAction]);
-
   const handleGetAll = useCallback(async () => {
     setIsLoading(true);
     try {
@@ -135,36 +76,86 @@ const MainApp: React.FC = () => {
 
       if (response.status === 429) {
         setMessage("Rate limit exceeded. Please try again later.");
-        //logAction("Failed to fetch URLs: Rate limit exceeded");
+        logAction("Failed to fetch URLs: Rate limit exceeded");
         return;
       }
 
       if (response.ok) {
         const urls: UrlData[] = JSON.parse(responseText);
         setAllUrls(urls);
-        // Estimate totalPages: if fewer than pageSize, assume last page
         const isLastPage = urls.length < pageSize;
         setEstimatedTotalPages((prev) =>
           isLastPage ? currentPage + 1 : Math.max(prev, currentPage + 2)
         );
-        //logAction(`Fetched URLs (page ${currentPage + 1})`);
+        logAction(`Fetched URLs (page ${currentPage + 1})`);
       } else {
-        setMessage(
-          `Error fetching URLs from ${BASE_BACKEND_URL} ${response.status} - ${responseText}`
-        );
+        setMessage(`Error fetching URLs: ${response.status} - ${responseText}`);
         logAction(`Failed to fetch URLs: ${response.status}`);
       }
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      setMessage(
-        `Error fetching URLs from ${BASE_BACKEND_URL}: ${errorMessage}`
-      );
-      //logAction(`Failed to fetch URLs: ${errorMessage}`);
+      setMessage(`Error fetching URLs: ${errorMessage}`);
+      logAction(`Failed to fetch URLs: ${errorMessage}`);
     } finally {
       setIsLoading(false);
     }
   }, [currentPage, pageSize, logAction]);
+
+  const handleShorten = useCallback(async () => {
+    setIsSubmitting(true);
+    setIsLoading(true);
+    try {
+      const requestBody: CreationRequest = {
+        url,
+        ttlMinute: ttl ? parseInt(ttl) : null,
+        customShortenedUrl: customUrl || null,
+      };
+
+      const response = await fetch(BASE_BACKEND_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestBody),
+      });
+
+      const responseText = await response.text();
+
+      if (response.status === 429) {
+        setMessage("Rate limit exceeded. Please try again later.");
+        logAction("Failed to shorten URL: Rate limit exceeded");
+        return;
+      }
+
+      if (response.ok) {
+        setShortUrl(`${BASE_FRONTEND_URL}/redirect/${responseText}`);
+        setMessage("URL shortened successfully!");
+        logAction(`Shortened URL: ${url}`);
+        setOriginalUrl("");
+        setTtl("");
+        setCustomUrl("");
+        setCurrentPage(0); // Reset to first page
+        await handleGetAll();
+      } else {
+        try {
+          const errorData = JSON.parse(responseText);
+          setMessage(`Error: ${errorData.error || responseText}`);
+        } catch {
+          setMessage(
+            `Error shortening URL: ${response.status} - ${responseText}`
+          );
+        }
+        logAction(`Failed to shorten URL: ${response.status}`);
+      }
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      setMessage(`Error connecting to server: ${errorMessage}`);
+      logAction(`Failed to shorten URL: ${errorMessage}`);
+    } finally {
+      setIsSubmitting(false);
+      setIsLoading(false);
+    }
+  }, [url, ttl, customUrl, logAction, handleGetAll]);
 
   const handleDelete = useCallback(
     async (shortenedUrl: string) => {
@@ -182,9 +173,9 @@ const MainApp: React.FC = () => {
 
         if (response.ok) {
           setMessage("URL deleted successfully");
-          await handleGetAll();
           logAction(`Deleted URL: ${shortenedUrl}`);
           setCurrentPage(0); // Reset to first page
+          await handleGetAll();
         } else {
           const responseText = await response.text();
           setMessage(
@@ -208,9 +199,8 @@ const MainApp: React.FC = () => {
     async (e: React.FormEvent) => {
       e.preventDefault();
       await handleShorten();
-      await handleGetAll();
     },
-    [handleShorten, handleGetAll]
+    [handleShorten]
   );
 
   const handleShare = useCallback(async () => {
@@ -227,8 +217,6 @@ const MainApp: React.FC = () => {
       }
     }
   }, [shortUrl, logAction]);
-
-  // Fetch URLs when page changes
   useEffect(() => {
     handleGetAll();
   }, [currentPage, handleGetAll]);
@@ -238,16 +226,18 @@ const MainApp: React.FC = () => {
       <header className="app-header">
         <div className="container">
           <h1>🔗 URL Shortener</h1>
-          <QRCodeSVG
-            value={BASE_FRONTEND_URL}
-            size={120}
-            bgColor="#ffffff"
-            fgColor="#1f2937"
-            level="M"
-            includeMargin
-            aria-label="QR code for shortened URL"
-          />
-
+          <div className="qr-code-container">
+            <QRCodeSVG
+              value={BASE_FRONTEND_URL}
+              size={90}
+              bgColor="#ffffff"
+              fgColor="#1f2937"
+              level="M"
+              includeMargin
+              aria-label="QR code for URL Shortener"
+            />
+            <span className="qr-tooltip">Scan to visit URL Shortener</span>
+          </div>
           <button
             onClick={() => setIsDarkMode(!isDarkMode)}
             className="theme-toggle"
@@ -316,7 +306,6 @@ const MainApp: React.FC = () => {
           )}
         </div>
       </main>
-
       <footer className="app-footer">
         <div className="container">
           <p>© 2025 URL Shortener - Tool to shorten a long link</p>

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import "./UrlList.css";
 
 interface UrlData {
@@ -67,13 +67,12 @@ const UrlList: React.FC<UrlListProps> = ({
   const [sortKey, setSortKey] = useState<SortKey>(SortKey.OriginalUrl);
   const [sortAsc, setSortAsc] = useState(true);
 
-  // Fetch URLs on mount if not already fetched
   useEffect(() => {
-    if (allUrls.length === 0 && showUrls) {
+    if (allUrls.length === 0 && showUrls && !loading) {
       setLoading(true);
       handleGetAll().finally(() => setLoading(false));
     }
-  }, [allUrls, showUrls, handleGetAll]);
+  }, [allUrls, showUrls, handleGetAll, loading]);
 
   const toggleVisibility = () => {
     if (!showUrls && allUrls.length === 0) {
@@ -86,6 +85,15 @@ const UrlList: React.FC<UrlListProps> = ({
     }
   };
 
+  const handleRefresh = async () => {
+    setLoading(true);
+    try {
+      await handleGetAll();
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSort = (key: SortKey) => {
     if (key === sortKey) {
       setSortAsc(!sortAsc);
@@ -94,6 +102,14 @@ const UrlList: React.FC<UrlListProps> = ({
       setSortAsc(true);
     }
   };
+
+  const handlePrevPage = useCallback(() => {
+    setCurrentPage((prev) => Math.max(0, prev - 1));
+  }, [setCurrentPage]);
+
+  const handleNextPage = useCallback(() => {
+    setCurrentPage((prev) => Math.min(prev + 1, estimatedTotalPages - 1));
+  }, [setCurrentPage, estimatedTotalPages]);
 
   const filteredAndSortedUrls = useMemo(() => {
     const filtered = allUrls.filter(
@@ -143,6 +159,14 @@ const UrlList: React.FC<UrlListProps> = ({
               className="search-bar"
               aria-label="Search URLs"
             />
+            <button
+              onClick={handleRefresh}
+              className="refresh-button"
+              aria-label="Refresh URL list"
+              disabled={loading}
+            >
+              {loading ? "Refreshing..." : "Refresh"}
+            </button>
           </div>
 
           <div className="sort-buttons">
@@ -192,8 +216,6 @@ const UrlList: React.FC<UrlListProps> = ({
             <ul className="url-list" id="url-list">
               {filteredAndSortedUrls.map((urlData) => (
                 <li key={urlData.shortenedUrl} className="url-item">
-                  <span className="original-url">{urlData.url}</span>
-                  <span className="arrow">→</span>
                   <span className="short-url">
                     <a
                       href={`/redirect/${urlData.shortenedUrl}`}
@@ -204,6 +226,9 @@ const UrlList: React.FC<UrlListProps> = ({
                       {urlData.shortenedUrl}
                     </a>
                   </span>
+                  <span className="arrow">→</span>
+                  <span className="original-url">{urlData.url}</span>
+
                   <CopyButton text={urlData.shortenedUrl} />
                   <span className="click-count">
                     Clicks: {urlData.clickCount}
@@ -230,24 +255,27 @@ const UrlList: React.FC<UrlListProps> = ({
               <p>Try adjusting your search or shortening a new URL!</p>
             </div>
           )}
+
           <div className="pagination-controls">
             <button
-              onClick={() => setCurrentPage((prev) => prev - 1)}
+              onClick={handlePrevPage}
               disabled={currentPage === 0}
               className="pagination-button"
               aria-label="Previous page"
             >
               Previous
             </button>
-            <span>Page {currentPage + 1}</span>
+            <span>
+              Page {currentPage + 1} of {estimatedTotalPages}
+            </span>
             <button
-              onClick={() => setCurrentPage((prev) => prev + 1)}
+              onClick={handleNextPage}
               disabled={currentPage >= estimatedTotalPages - 1}
               className="pagination-button"
               aria-label="Next page"
             >
               {currentPage >= estimatedTotalPages - 1
-                ? "No more pages 😅"
+                ? "No more pages"
                 : "Next"}
             </button>
           </div>
