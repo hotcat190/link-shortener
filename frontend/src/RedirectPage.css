@@ -9,7 +9,7 @@
 }
 
 /* Dark mode for page container */
-body.dark-mode .redirect-page {
+.dark-mode .redirect-page {
     background: #1f2937;
 }
 
@@ -25,7 +25,7 @@ body.dark-mode .redirect-page {
 }
 
 /* Dark mode for card */
-body.dark-mode .redirect-card {
+.dark-mode .redirect-card {
     background: #374151;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
@@ -39,7 +39,7 @@ body.dark-mode .redirect-card {
 }
 
 /* Dark mode for heading */
-body.dark-mode .redirect-heading {
+.dark-mode .redirect-heading {
     color: #d1d5db;
 }
 
@@ -52,7 +52,7 @@ body.dark-mode .redirect-heading {
 }
 
 /* Dark mode for error message */
-body.dark-mode .error-message {
+.dark-mode .error-message {
     color: #f87171;
 }
 
@@ -71,7 +71,7 @@ body.dark-mode .error-message {
 }
 
 /* Dark mode for URL link */
-body.dark-mode .url-link {
+.dark-mode .url-link {
     color: #60a5fa;
 }
 
@@ -82,7 +82,7 @@ body.dark-mode .url-link {
 }
 
 /* Dark mode for loading text */
-body.dark-mode .loading-text {
+.dark-mode .loading-text {
     color: #9ca3af;
 }
 
@@ -121,13 +121,13 @@ body.dark-mode .loading-text {
 }
 
 /* Dark mode for retry and redirect buttons */
-body.dark-mode .retry-button,
-body.dark-mode .redirect-button {
+.dark-mode .retry-button,
+.dark-mode .redirect-button {
     background: linear-gradient(135deg, #047857, #059669);
 }
 
-body.dark-mode .retry-button:hover,
-body.dark-mode .redirect-button:hover {
+.dark-mode .retry-button:hover,
+.dark-mode .redirect-button:hover {
     background: linear-gradient(135deg, #059669, #10b981);
 }
 
@@ -145,12 +145,12 @@ body.dark-mode .redirect-button:hover {
 }
 
 /* Dark mode for copy button */
-body.dark-mode .copy-button {
+.dark-mode .copy-button {
     background: #4b5563;
     color: #d1d5db;
 }
 
-body.dark-mode .copy-button:hover {
+.dark-mode .copy-button:hover {
     background: #6b7280;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
@@ -172,7 +172,7 @@ body.dark-mode .copy-button:hover {
 }
 
 /* Dark mode for tooltip */
-body.dark-mode .copy-tooltip {
+.dark-mode .copy-tooltip {
     background: #4b5563;
 }
 
@@ -201,7 +201,7 @@ body.dark-mode .copy-tooltip {
 }
 
 /* Dark mode for spinner */
-body.dark-mode .spinner {
+.dark-mode .spinner {
     border: 4px solid #064e3b;
     border-top: 4px solid #10b981;
 }

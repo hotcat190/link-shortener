@@ -9,16 +9,48 @@
   max-width: 300px;
   text-align: center;
   animation: slideIn 0.3s ease-out;
+  background: #ffffff;
+  /* Light mode default */
+  color: #1f2937;
+  /* Light mode text */
+}
+
+/* Dark mode for message box */
+body.dark-mode .message-box {
+  background: #374151;
+  /* Matches RedirectPage.css card */
+  color: #d1d5db;
+  /* Matches app text */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  /* Darker shadow */
 }
 
 .message-box.success {
   background: #d4edda;
+  /* Light mode success */
   color: #155724;
+}
+
+/* Dark mode for success */
+body.dark-mode .message-box.success {
+  background: #064e3b;
+  /* Dark green, matches spinner border */
+  color: #6ee7b7;
+  /* Light green for contrast */
 }
 
 .message-box.error {
   background: #f8d7da;
+  /* Light mode error */
   color: #721c24;
+}
+
+/* Dark mode for error */
+body.dark-mode .message-box.error {
+  background: #7f1d1d;
+  /* Dark red, error tone */
+  color: #f87171;
+  /* Matches RedirectPage.css error */
 }
 
 /* Animation for sliding in */

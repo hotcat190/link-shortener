@@ -66,25 +66,31 @@ const UrlList: React.FC<UrlListProps> = ({
   const [loading, setLoading] = useState(false);
   const [sortKey, setSortKey] = useState<SortKey>(SortKey.OriginalUrl);
   const [sortAsc, setSortAsc] = useState(true);
-
+  const [hasFetchedOnce, setHasFetchedOnce] = useState(false);
   useEffect(() => {
-    if (allUrls.length === 0 && showUrls && !loading) {
+    if (allUrls.length === 0 && showUrls && !loading && !hasFetchedOnce) {
       setLoading(true);
-      handleGetAll().finally(() => setLoading(false));
+      handleGetAll().finally(() => {
+        setLoading(false);
+        setHasFetchedOnce(true); // ✅ Mark that we've fetched once
+      });
     }
-  }, [allUrls, showUrls, handleGetAll, loading]);
-
+  }, [allUrls, showUrls, handleGetAll, loading, hasFetchedOnce]);
   const toggleVisibility = () => {
     if (!showUrls && allUrls.length === 0) {
       setLoading(true);
-      handleGetAll().finally(() => setLoading(false));
+      handleGetAll().finally(() => {
+        setLoading(false);
+        setHasFetchedOnce(true); // ✅ Set it when fetching on toggle
+      });
     }
     setShowUrls((prev) => !prev);
-    if (!showUrls) {
+    if (showUrls) {
+      setHasFetchedOnce(false); // ✅ Reset when hiding
+    } else {
       setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 50);
     }
   };
-
   const handleRefresh = async () => {
     setLoading(true);
     try {

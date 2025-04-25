@@ -10,6 +10,8 @@ const RedirectPage: React.FC = () => {
   const [copied, setCopied] = useState(false);
   const [countdown, setCountdown] = useState(3);
 
+  const isDarkMode = localStorage.getItem("theme") === "dark"; // or however you store the theme
+
   const fetchRedirect = useCallback(async () => {
     if (!shortId) {
       setError("Invalid URL: No short ID provided");
@@ -79,70 +81,72 @@ const RedirectPage: React.FC = () => {
   }, [originalUrl]);
 
   return (
-    <div className="redirect-page">
-      <div className="redirect-card">
-        <h2 className="redirect-heading">
-          {error
-            ? "Redirect Failed"
-            : countdown > 0
-            ? `Redirecting in ${countdown}s...`
-            : "Redirecting..."}
-        </h2>
-        {error ? (
-          <div>
-            <p className="error-message">{error}</p>
-            <button
-              onClick={() => {
-                setError(null);
-                setCountdown(3);
-                fetchRedirect();
-              }}
-              className="retry-button"
-            >
-              Retry
-            </button>
-          </div>
-        ) : originalUrl ? (
-          <div>
-            <p>
-              <a
-                href={originalUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="url-link"
-              >
-                {originalUrl}
-              </a>
-            </p>
-            <div className="button-group">
+    <div className={`redirect-wrapper ${isDarkMode ? "dark-mode" : ""}`}>
+      <div className="redirect-page">
+        <div className="redirect-card">
+          <h2 className="redirect-heading">
+            {error
+              ? "Redirect Failed"
+              : countdown > 0
+              ? `Redirecting in ${countdown}s...`
+              : "Redirecting..."}
+          </h2>
+          {error ? (
+            <div>
+              <p className="error-message">{error}</p>
               <button
-                onClick={handleCopy}
-                className="copy-button"
-                aria-label={copied ? "URL copied" : "Copy URL"}
+                onClick={() => {
+                  setError(null);
+                  setCountdown(3);
+                  fetchRedirect();
+                }}
+                className="retry-button"
               >
-                {copied ? (
-                  <>
-                    Copied!
-                    <span className="copy-tooltip">Copied to clipboard!</span>
-                  </>
-                ) : (
-                  "Copy URL"
-                )}
-              </button>
-              <button
-                onClick={handleImmediateRedirect}
-                className="redirect-button"
-              >
-                Redirect Now
+                Retry
               </button>
             </div>
-          </div>
-        ) : (
-          <div>
-            <div className="spinner"></div>
-            <p className="loading-text">Fetching URL...</p>
-          </div>
-        )}
+          ) : originalUrl ? (
+            <div>
+              <p>
+                <a
+                  href={originalUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="url-link"
+                >
+                  {originalUrl}
+                </a>
+              </p>
+              <div className="button-group">
+                <button
+                  onClick={handleCopy}
+                  className="copy-button"
+                  aria-label={copied ? "URL copied" : "Copy URL"}
+                >
+                  {copied ? (
+                    <>
+                      Copied!
+                      <span className="copy-tooltip">Copied to clipboard!</span>
+                    </>
+                  ) : (
+                    "Copy URL"
+                  )}
+                </button>
+                <button
+                  onClick={handleImmediateRedirect}
+                  className="redirect-button"
+                >
+                  Redirect Now
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div>
+              <div className="spinner"></div>
+              <p className="loading-text">Fetching URL...</p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

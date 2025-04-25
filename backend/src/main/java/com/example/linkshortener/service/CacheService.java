@@ -61,7 +61,7 @@ public class CacheService {
     public void incrementClickCount(String shortenedUrl) {
         String key = "clicks:" + shortenedUrl;
         redisTemplate.opsForValue().increment(key);
-        System.out.println("Click count for " + shortenedUrl + " is: " + redisTemplate.opsForValue().get(key));
+        //System.out.println("Click count for " + shortenedUrl + " is: " + redisTemplate.opsForValue().get(key));
         redisTemplate.expire(key, 1, TimeUnit.HOURS); // Optional
     }
 
@@ -75,9 +75,10 @@ public class CacheService {
                 String value = redisTemplate.opsForValue().get(key);
 
                 if (value != null) {
-                    Long clickIncrement = Long.parseLong(value);
+                    long clickIncrement = (Long.parseLong(value))/2;
+                    System.out.println("Click count for " + shortenedUrl + " is: " + clickIncrement);
                     dataRepository.findByShortenedUrl(shortenedUrl).ifPresent(data -> {
-                        data.setClickCount(data.getClickCount() + clickIncrement.intValue());
+                        data.setClickCount(data.getClickCount() + (int) clickIncrement);
                         dataRepository.save(data);
                     });
 
