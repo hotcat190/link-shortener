@@ -53,15 +53,21 @@ const MainApp: React.FC = () => {
   }, [message]);
 
   const logAction = useCallback((actionMessage: string) => {
+    const generateUUID = () =>
+      typeof crypto?.randomUUID === "function"
+        ? crypto.randomUUID()
+        : Math.random().toString(36).substring(2) + Date.now().toString(36);
+
     setActionLog((prev) => [
       {
-        id: crypto.randomUUID(),
+        id: generateUUID(),
         message: actionMessage,
         timestamp: new Date().toLocaleTimeString(),
       },
       ...prev.slice(0, 4), // Keep last 5 actions
     ]);
   }, []);
+
   const handleGetAll = useCallback(async () => {
     setIsLoading(true);
     try {
