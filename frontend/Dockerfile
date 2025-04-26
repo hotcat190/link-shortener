@@ -1,4 +1,4 @@
-# Use Node to build
+# Build frontend
 FROM node:23-slim AS builder
 
 WORKDIR /app
@@ -7,9 +7,14 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-# Use Nginx to serve
-FROM nginx:alpine
-COPY --from=builder /app/dist /usr/share/nginx/html
-# Copy custom nginx config if needed
+# Serve frontend using a simple Node HTTP server (optional)
+FROM node:23-slim
+
+WORKDIR /app
+RUN npm install -g serve
+
+# Copy built frontend
+COPY --from=builder /app/dist /app/dist
+
 EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["serve", "-s", "dist", "-l", "80"]
