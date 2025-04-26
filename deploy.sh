@@ -1,6 +1,13 @@
 # !/bin/bash
 # This script is used to install and run the project on Ubuntu 24.04
 
+# NOTE: Before running this script, make sure you have the following:
+# 1. Install Git
+# 2. Clone this repository
+# 3. Switch to the cloud-deploy branch
+# 4. Make this script executable: chmod +x deploy.sh
+# 5. Run this script: ./deploy.sh
+
 # Remove old versions of docker
 for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
 
