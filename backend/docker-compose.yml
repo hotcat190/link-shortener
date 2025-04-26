@@ -33,7 +33,7 @@ services:
     image: nginx:latest
     container_name: nginx
     ports:
-      - "80:80"
+      - "8000:8000"
     depends_on:
       - app
     volumes:

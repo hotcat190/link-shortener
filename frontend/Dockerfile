@@ -1,17 +1,15 @@
-FROM node:18
+# Use Node to build
+FROM node:23-slim AS builder
 
-# Set working directory
 WORKDIR /app
-
-# Install dependencies
 COPY package*.json ./
 RUN npm install
-
-# Copy the rest of the app
 COPY . .
+RUN npm run build
 
-# Expose the Vite dev server port
-EXPOSE 5173
-
-# Run the Vite development server
-CMD ["npm", "run", "dev"]
+# Use Nginx to serve
+FROM nginx:alpine
+COPY --from=builder /app/dist /usr/share/nginx/html
+# Copy custom nginx config if needed
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
