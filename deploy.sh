@@ -22,18 +22,6 @@ sudo apt-get update
 # Install Docker Engine, containerd, and Docker Compose
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
 
-# Install git
-sudo apt-get install git -y
-
-# Clone the repository
-
-git clone https://github.com/TrieuMinhNhat/link-shortener.git
-cd link-shortener
-
-# Switch to deploy branch
-git checkout cloud-deploy
-git pull origin cloud-deploy
-
 # Start the services
 # Make sure to run this script from the root of the project
 set -e
