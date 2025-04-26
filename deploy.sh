@@ -33,12 +33,12 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin 
 # Make sure to run this script from the root of the project
 set -e
 
-echo "🚀 Building and starting backend..."
-cd backend
-sudo docker compose up --build
-
 echo "🚀 Building and starting frontend..."
 cd ../frontend
+sudo docker compose up --build
+
+echo "🚀 Building and starting backend..."
+cd backend
 sudo docker compose up --build
 
 echo "✅ All services are up and running!"
