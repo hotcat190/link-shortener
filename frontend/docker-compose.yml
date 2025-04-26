@@ -1,6 +1,6 @@
 services:
   frontend:
-    name: frontend
+    container-name: frontend
     build: .
     ports:
       - "80:80"
