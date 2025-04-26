@@ -28,3 +28,50 @@ Mục tiêu của dự án là rút gọn một đường link dài thành một
   - Người dùng có thể tùy chỉnh link rút gọn thay vì để hệ thống tự sinh ngẫu nhiên.
   - Hỗ trợ thiết lập thời gian tồn tại (time-to-live) cho mỗi link.
   - Theo dõi số lần nhấp chuột (click count) cho từng link rút gọn.
+
+## Cách cài đặt và bản demo
+
+### Yêu cầu
+
+Để chạy dự án này, cần chuẩn bị sẵn các công cụ sau:
+
+- **Git**
+- **Node.js**
+- **Docker và Docker Compose**
+
+### Chạy local
+
+Làm theo các bước sau để chạy dự án trên máy local:
+
+1. Clone repository:
+
+   ```bash
+   git clone https://github.com/TrieuMinhNhat/link-shortener.git
+   ```
+
+2. Chạy Docker Compose để khởi động backend và database:
+
+   ```bash
+   cd backend
+   docker compose up --build
+   ```
+
+3. Chạy frontend:
+
+   ```bash
+   cd frontend
+   npm install
+   npm run dev
+   ```
+
+4. Truy cập trình duyệt tại địa chỉ:
+   `http://localhost:5173`
+   để sử dụng ứng dụng.
+
+### Bản demo
+
+Nhóm đã triển khai bản demo online, hãy truy cập tại địa chỉ:
+
+👉 [http://52.77.235.14/](http://52.77.235.14/)
+
+để trải nghiệm trực tiếp.
