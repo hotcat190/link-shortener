@@ -28,10 +28,10 @@ set -e
 
 echo "🚀 Building and starting backend..."
 cd backend
-docker-compose up -d --build
+sudo docker compose up -d --build
 
 echo "🚀 Building and starting frontend..."
 cd ../frontend
-docker-compose up -d --build
+sudo docker compose up -d --build
 
 echo "✅ All services are up and running!"

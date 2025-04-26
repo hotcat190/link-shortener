@@ -8,6 +8,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/url_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
+    restart: unless-stopped
     depends_on:
       db:
         condition: service_healthy
@@ -28,6 +29,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
 
   nginx:
     image: nginx:latest
@@ -39,10 +41,11 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
+    restart: unless-stopped
 
   redis:
     image: redis:latest
     container_name: redis
     ports:
       - "6379:6379"
-    restart: always
+    restart: unless-stopped
