@@ -21,7 +21,6 @@ public final class DataService {
     @Autowired
     private final DataRepository dataRepository;
 
-
     public String findOrigin(String shortenedUrl) {
         Data data = dataRepository.findByShortenedUrl(shortenedUrl).orElse(null);
         if (data != null) {
