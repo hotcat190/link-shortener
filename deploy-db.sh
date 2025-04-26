@@ -1,13 +1,14 @@
 #!/bin/bash
 
-# This script is used to install and run backend only on Ubuntu 24.04
+# This script is used to install and run database only on Ubuntu 24.04
+
 
 # NOTE: Before running this script, make sure you have the following:
 # 1. Install Git
 # 2. Clone this repository
 # 3. Switch to the cloud-deploy branch
-# 4. Make this script executable: chmod +x deploy-be.sh
-# 5. Run this script: ./deploy-be.sh
+# 4. Make this script executable: chmod +x deploy-db.sh
+# 5. Run this script: ./deploy-db.sh
 
 # Remove old versions of docker
 for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
@@ -34,6 +35,7 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin 
 # Make sure to run this script from the root of the project
 set -e
 
-echo "🚀 Building and starting backend..."
-cd backend
+
+echo "🚀 Building and starting database..."
+cd db
 sudo docker compose up --build

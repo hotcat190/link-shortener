@@ -6,13 +6,11 @@ import com.example.linkshortener.data.repository.DataRepository;
 import com.example.linkshortener.util.CustomUUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.sql.SQLIntegrityConstraintViolationException;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
@@ -23,22 +21,8 @@ public final class DataService {
     @Autowired
     private final DataRepository dataRepository;
 
-    @Autowired
-    private final CacheService cacheService;
-
-    @Value("${cache.enabled:false}") // false is default if not set
-    private boolean cacheEnabled;
-
 
     public String findOrigin(String shortenedUrl) {
-        // Find info from cache first
-        if (cacheEnabled) {
-            String cachedUrl = cacheService.getOriginalUrlFromCache(shortenedUrl);
-            if (cachedUrl != null){
-                return cachedUrl;
-            }
-        }
-
         Data data = dataRepository.findByShortenedUrl(shortenedUrl).orElse(null);
         if (data != null) {
             // Check if the URL has expired
@@ -48,13 +32,6 @@ public final class DataService {
                     data.getExpirationTime().isAfter(LocalDateTime.now())) {
                 data.setClickCount(data.getClickCount() + 1);
                 dataRepository.save(data);
-
-                if (cacheEnabled) {
-                    LocalDateTime now = LocalDateTime.now();
-                    LocalDateTime expTime = data.getExpirationTime();
-                    cacheService.saveToCache(shortenedUrl, data.getUrl(), expTime != null ?
-                            Duration.between(expTime, now).toSeconds() : null);
-                }
                 return data.getUrl();
             } else {
                 deleteUrl(shortenedUrl);
@@ -103,19 +80,13 @@ public final class DataService {
             dataRepository.save(data); // Save again to update the shortened URL
         }
 
-        String shortenedUrl = data.getShortenedUrl();
-        if (cacheEnabled) {
-            cacheService.saveToCache(shortenedUrl, url, ttlMinute != null ? ttlMinute * 60 : null);
-        }
-        return shortenedUrl;
+        return data.getShortenedUrl();
     }
 
    
     public void deleteUrl(String shortenedUrl) {
         dataRepository.findByShortenedUrl(shortenedUrl)
                 .ifPresent(dataRepository::delete); // Shorter lambda
-
-        cacheService.deleteFromCache(shortenedUrl); // Still delete from Redis just in case
     }
 
     public void deleteAll() {

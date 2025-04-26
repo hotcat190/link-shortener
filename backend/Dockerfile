@@ -19,8 +19,8 @@ COPY src ./src
 # Package the application using Maven
 RUN mvn package -DskipTests
 
-# Expose the Nginx port, do not expose the application port 8080
-EXPOSE 8000
+# Expose the application port 8080
+EXPOSE 8080
 
 # Specify the command to run the application
 CMD ["java", "-jar", "target/linkshortener-0.0.1-SNAPSHOT.jar", "--cache.enabled=true"]

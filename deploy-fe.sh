@@ -1,8 +1,6 @@
 #!/bin/bash
 
 # This script is used to install and run frontend only on Ubuntu 24.04
-# Used in case you want to separate backend and frontend deployment
-# If you want to run both backend and frontend, please use deploy.sh in branch cloud-deploy
 
 # NOTE: Before running this script, make sure you have the following:
 # 1. Install Git
