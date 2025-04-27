@@ -18,6 +18,8 @@ import java.util.Random;
 @Service
 @RequiredArgsConstructor
 public final class DataService {
+    private static final int MAX_SAVE_RETRIES = 5;
+
     @Autowired
     private final DataRepository dataRepository;
 
@@ -39,6 +41,19 @@ public final class DataService {
         }
         
         return null;
+    }
+
+    private Data generateShortenedUrlAndSave(Data data) {
+        Random random = new SecureRandom();
+        for (int i = 0; i < MAX_SAVE_RETRIES; i++) {
+            try {
+                String shortenedUrl = CustomUUID.random(random);
+                data.setShortenedUrl(shortenedUrl);
+                return dataRepository.save(data);
+            } catch (Exception ignored) {
+            }
+        }
+        return null; // If all retries fail, return null
     }
 
 
@@ -70,13 +85,13 @@ public final class DataService {
             }
         } else {
             // Case 2: No custom shortened URL provided, generate a random one
-            Random random = new SecureRandom();
-            String shortenedUrl = CustomUUID.random(random);
-            while (dataRepository.existsByShortenedUrl(shortenedUrl)) {
-                shortenedUrl = CustomUUID.random(random);
+            data = generateShortenedUrlAndSave(data);
+
+            if (data == null) {
+                throw new SQLIntegrityConstraintViolationException(
+                        "Failed to generate a unique shortened URL. Please try again."
+                );
             }
-            data.setShortenedUrl(shortenedUrl);
-            dataRepository.save(data); // Save again to update the shortened URL
         }
 
         return data.getShortenedUrl();
