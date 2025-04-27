@@ -1,5 +1,3 @@
-# README.md
-
 ## Giới thiệu - Nhóm 4
 
 Dự án được thực hiện bởi hai thành viên:
@@ -41,7 +39,7 @@ Mục tiêu của dự án là rút gọn một đường link dài thành một
 
 ### Chạy local
 
-Làm theo các bước sau để chạy dự án trên máy local:
+Làm theo các bước sau để chạy dự án `với đầy đủ chức năng` trên máy local:
 
 1. Clone repository:
 
@@ -75,3 +73,5 @@ Nhóm đã triển khai bản demo online, hãy truy cập tại địa chỉ:
 👉 [http://52.77.235.14/](http://52.77.235.14/)
 
 để trải nghiệm trực tiếp.
+
+`Lưu ý:` Bản demo đã lược bỏ Rate Limiting và Cache nhằm dễ dàng triển khai trên cloud 
