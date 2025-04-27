@@ -74,4 +74,4 @@ Nhóm đã triển khai bản demo online, hãy truy cập tại địa chỉ:
 
 để trải nghiệm trực tiếp.
 
-`Lưu ý:` Bản demo đã lược bỏ Rate Limiting và Cache nhằm dễ dàng triển khai trên cloud 
+`Lưu ý:` Bản demo đã lược bỏ Rate Limiting và Cache nhằm dễ dàng triển khai trên cloud. Bản demo sử dụng mã nguồn tại branche `cloud-separated-deploy`
