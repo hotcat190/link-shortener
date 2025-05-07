@@ -75,7 +75,7 @@ Làm theo các bước sau để chạy dự án `với đầy đủ chức năn
 
 Nhóm đã triển khai bản demo online, hãy truy cập tại địa chỉ:
 
-👉 [http://52.77.235.14/](http://52.77.235.14/)
+👉 [http://52.77.235.14/](http://13.215.249.189/)
 
 để trải nghiệm trực tiếp.
 
