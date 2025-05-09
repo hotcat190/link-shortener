@@ -6,5 +6,5 @@ services:
       - "80:80"
     restart: unless-stopped
     environment:
-      BASE_BACKEND_URL: ${BASE_BACKEND_URL}
-      BASE_FRONTEND_URL: ${BASE_FRONTEND_URL}
+      BASE_BACKEND_URL: ${VITE_BASE_BACKEND_URL}
+      BASE_FRONTEND_URL: ${VITE_BASE_FRONTEND_URL}
