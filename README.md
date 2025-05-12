@@ -183,7 +183,6 @@ public interface DataRepository
 
 ---
 
-Bạn có muốn mình chuyển thành bản trình chiếu hoặc PDF gọn đẹp?
 
 
 ## **7 Đo hiệu năng**
