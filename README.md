@@ -137,8 +137,6 @@ for (int i = 0; i < MAX_SAVE_RETRIES; i++) {
 
 * **Bảo mật**: CORS ngăn chặn truy cập trái phép và tấn công XSS.
 * **Ghi log**: Dùng Logback để theo dõi toàn bộ request/response.
-* **Giới hạn tốc độ**: Kết hợp Spring Interceptor + Redis để kiểm soát số lượng request mỗi IP, trả về 429 khi quá tải.
-
 ---
 
 ## **5. Thêm lớp persistent bằng ORM**
@@ -172,8 +170,14 @@ public interface DataRepository
 ```
 
 ---
+## **6. Triển khai kiến trúc**
+  - Rate Limiting là kiến trúc được sử dụng.
+  - Triển khai tại Gateway sử dụng Nginx
+  - Thông số về đo lường hiệu năng sẽ được trình bày là `phần 8`
 
-## **6. Một số triển khai khác**
+---
+
+## **7. Một số triển khai khác**
 
 * **TTL**: Cho phép URL tự hết hạn bằng EVENT trong MySQL.
 * **Custom ID**: Người dùng tự đặt chuỗi rút gọn mong muốn.
@@ -185,7 +189,7 @@ public interface DataRepository
 
 
 
-## **7 Đo hiệu năng**
+## **8. Đo hiệu năng**
 - Công cụ: K6, Dockerode
 - Thời gian đo: 60 s
 - Delay giữa các request với mỗi người dùng: 100 ms
