@@ -81,8 +81,6 @@ Nhóm đã triển khai bản demo online, hãy truy cập tại địa chỉ:
 
 `Lưu ý:` Bản demo đã lược bỏ Rate Limiting và Cache nhằm dễ dàng triển khai trên cloud. Bản demo sử dụng mã nguồn tại branch `cloud-separated-deploy`
 
-Dưới đây là bản tóm tắt súc tích từng phần của báo cáo, mỗi phần dưới 100 từ và giữ lại đoạn code tiêu biểu:
-
 ---
 
 # Chi tiết
@@ -118,10 +116,10 @@ for (int i = 0; i < MAX_SAVE_RETRIES; i++) {
 
 ## **2. Triển khai thành web hoàn chỉnh**
 
-* Xây dựng hệ thống đầy đủ gồm backend (Spring Boot + PostgreSQL + Redis) và frontend (React + TypeScript).
+* Xây dựng hệ thống đầy đủ gồm backend (Spring Boot + MySQL + Redis) và frontend (React + TypeScript).
 * Frontend cho phép rút gọn, xem thống kê, mã QR và danh sách URL.
 * Frontend gửi request tới backend để nhận dữ liệu JSON.
-* Cả hai deploy độc lập và kết nối qua proxy trong dev.
+* Cả hai deploy độc lập.
 
 ---
 
