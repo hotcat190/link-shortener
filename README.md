@@ -135,7 +135,7 @@ for (int i = 0; i < MAX_SAVE_RETRIES; i++) {
 
 ## **4. Cài đặt middleware**
 
-* **Bảo mật**: CORS và HTTP headers ngăn chặn truy cập trái phép và tấn công XSS.
+* **Bảo mật**: CORS ngăn chặn truy cập trái phép và tấn công XSS.
 * **Ghi log**: Dùng Logback để theo dõi toàn bộ request/response.
 * **Giới hạn tốc độ**: Kết hợp Spring Interceptor + Redis để kiểm soát số lượng request mỗi IP, trả về 429 khi quá tải.
 
