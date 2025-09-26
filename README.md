@@ -12,4 +12,5 @@ Dự án này cải tiến dựa trên dự án gốc của Triệu Minh Nhật 
 - Triển khai MessageQueue. (1-2 tuần)
 - Triển khai Spring Cloud Config & tách hệ thống thành Microservices. (3-5 tuần)
 - Triển khai DB sharding. (2-4 tuần)
+
 Tổng thời gian thực hiện: 7-13 tuần
