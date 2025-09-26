@@ -3,6 +3,8 @@ package com.example.linkshortener.service;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -13,6 +15,8 @@ import com.example.linkshortener.data.repository.DataRepository;
 
 @Service
 public class CacheService {
+
+    Logger logger = LoggerFactory.getLogger(CacheService.class);
 
     private final RedisTemplate<String, String> redisTemplate;
     
@@ -61,7 +65,7 @@ public class CacheService {
     public void incrementClickCount(String shortenedUrl) {
         String key = "clicks:" + shortenedUrl;
         redisTemplate.opsForValue().increment(key);
-        //System.out.println("Click count for " + shortenedUrl + " is: " + redisTemplate.opsForValue().get(key));
+        //logger.debug("Click count for " + shortenedUrl + " is: " + redisTemplate.opsForValue().get(key));
         redisTemplate.expire(key, 1, TimeUnit.HOURS); // Optional
     }
 
@@ -74,15 +78,20 @@ public class CacheService {
                 String shortenedUrl = key.replace("clicks:", "");
                 String value = redisTemplate.opsForValue().get(key);
 
-                if (value != null) {
-                    long clickIncrement = (Long.parseLong(value))/2;
-                    System.out.println("Click count for " + shortenedUrl + " is: " + clickIncrement);
+                try {
+                    long clickIncrement = Long.parseLong(value) / 2;
+                    logger.debug("Click count for " + shortenedUrl + " is: " + clickIncrement);
+
                     dataRepository.findByShortenedUrl(shortenedUrl).ifPresent(data -> {
                         data.setClickCount(data.getClickCount() + (int) clickIncrement);
                         dataRepository.save(data);
                     });
-
-                    // Clear the counter in Redis
+                } catch (NumberFormatException e) {
+                    // If the value is not a number, log the error but don't crash.
+                    logger.error("Could not parse click count for key '" + key + "'. Value was: '" + value + "'");
+                } finally {
+                    // IMPORTANT: Always delete the key after attempting to process it,
+                    // whether it succeeded or failed, to prevent it from being processed again.
                     redisTemplate.delete(key);
                 }
             }
