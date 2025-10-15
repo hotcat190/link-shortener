@@ -8,6 +8,8 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/url_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
+      SPRING_RABBITMQ_USER: user
+      SPRING_RABBITMQ_PASS: pass
     depends_on:
       db:
         condition: service_healthy
@@ -46,3 +48,12 @@ services:
     ports:
       - "6379:6379"
     restart: always
+  
+  rabbitmq:
+    image: rabbitmq:management-alpine
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
