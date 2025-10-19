@@ -5,12 +5,12 @@ import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.stereotype.Service;
 
+import com.example.linkshortener.data.message.CacheSyncMessage;
 import com.example.linkshortener.data.repository.DataRepository;
 
 @Service
@@ -19,14 +19,16 @@ public class CacheService {
     Logger logger = LoggerFactory.getLogger(CacheService.class);
 
     private final RedisTemplate<String, String> redisTemplate;
-    
-    @Autowired
-    private DataRepository dataRepository;
+    private final DataRepository dataRepository;
+    private final MessageProducerService messageProducer;
     private final HashOperations<String, String, String> hashOps;
 
-    @Autowired
-    public CacheService(RedisTemplate<String, String> redisTemplate) {
+    public CacheService(RedisTemplate<String, String> redisTemplate,
+                       DataRepository dataRepository,
+                       MessageProducerService messageProducer) {
         this.redisTemplate = redisTemplate;
+        this.dataRepository = dataRepository;
+        this.messageProducer = messageProducer;
         this.hashOps = redisTemplate.opsForHash();
     }
 
@@ -69,7 +71,7 @@ public class CacheService {
         redisTemplate.expire(key, 1, TimeUnit.HOURS); // Optional
     }
 
-    @Scheduled(fixedRate = 60 * 1000) // Every 1 minutes
+    @Scheduled(fixedRate = 60 * 1000) // Every 1 minute
     public void syncClickCountsToDatabase() {
         Set<String> keys = redisTemplate.keys("clicks:*");
 
@@ -79,19 +81,16 @@ public class CacheService {
                 String value = redisTemplate.opsForValue().get(key);
 
                 try {
-                    long clickIncrement = Long.parseLong(value) / 2;
-                    logger.debug("Click count for " + shortenedUrl + " is: " + clickIncrement);
-
-                    dataRepository.findByShortenedUrl(shortenedUrl).ifPresent(data -> {
-                        data.setClickCount(data.getClickCount() + (int) clickIncrement);
-                        dataRepository.save(data);
-                    });
+                    long clickIncrement = Long.parseLong(value);
+                    if (clickIncrement > 0) {
+                        messageProducer.sendCacheSyncMessage(
+                            new CacheSyncMessage(shortenedUrl, (int) clickIncrement)
+                        );
+                        logger.debug("Sent cache sync message for {} with {} clicks", shortenedUrl, clickIncrement);
+                    }
                 } catch (NumberFormatException e) {
-                    // If the value is not a number, log the error but don't crash.
-                    logger.error("Could not parse click count for key '" + key + "'. Value was: '" + value + "'");
+                    logger.error("Could not parse click count for key '{}'. Value was: '{}'", key, value);
                 } finally {
-                    // IMPORTANT: Always delete the key after attempting to process it,
-                    // whether it succeeded or failed, to prevent it from being processed again.
                     redisTemplate.delete(key);
                 }
             }

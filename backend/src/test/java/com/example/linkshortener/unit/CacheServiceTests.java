@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.example.linkshortener.data.entity.Data;
 import com.example.linkshortener.data.repository.DataRepository;
 import com.example.linkshortener.service.CacheService;
+import com.example.linkshortener.service.MessageProducerService;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,6 +30,8 @@ class CacheServiceTest {
     private RedisTemplate<String, String> redisTemplate;
     @Mock
     private DataRepository dataRepository;
+    @Mock
+    private MessageProducerService messageProducerService;
 
     // Mock the specific Redis operations that the service uses
     @Mock
@@ -44,7 +48,7 @@ class CacheServiceTest {
         when(redisTemplate.opsForHash()).thenReturn(hashOperations);
         
         // STEP 2: NOW, manually create the service instance using the configured mocks.
-        cacheService = new CacheService(redisTemplate);
+        cacheService = new CacheService(redisTemplate, dataRepository, messageProducerService);
 
         // STEP 3: Manually inject the other mocked dependency (@Autowired field).
         ReflectionTestUtils.setField(cacheService, "dataRepository", dataRepository);
