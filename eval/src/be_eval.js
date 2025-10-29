@@ -7,7 +7,7 @@ const DOCKER_PORT = 2375;
 const CONTAINER_NAMES = ["app", "mysql", "redis", "nginx"];
 
 const docker = new Docker({
-  socketPath: "/home/lml/.docker/desktop/docker.sock",
+  socketPath: "/var/run/docker.sock",
 });
 
 const containers = CONTAINER_NAMES.map((name) => docker.getContainer(name));
@@ -77,7 +77,7 @@ async function eval(totalRunTime) {
 
 eval(60000).then((result) => {
   const logFilePath =
-    "/home/lml/Code/Java/link-shortener/eval/results/logs/be.log";
+    "/home/kali/link-shortener/eval/results/logs/be.log";
 
   const logData = [
     "----------------" + "Backend Evaluation" + "-----------------",
