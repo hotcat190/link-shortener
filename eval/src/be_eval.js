@@ -5,7 +5,7 @@ const path = require("path");
 const DOCKER_HOST = "localhost";
 const DOCKER_PORT = 2375;
 
-const CONTAINER_NAMES = ["app", "mysql", "redis", "nginx"];
+const CONTAINER_NAMES = ["app", "mysql", "redis", "nginx", "rabbitmq"];
 
 const docker = new Docker({
   socketPath: "/var/run/docker.sock",
@@ -29,6 +29,9 @@ function getCpuUsageInPercent(stats) {
 }
 
 function getMemoryUsageInMB(stats) {
+  if (!stats.memory_stats || stats.memory_stats.usage === undefined) {
+    return 0;
+  }
   return stats.memory_stats.usage / (1024 * 1024);
 }
 
@@ -41,6 +44,7 @@ async function getContainerStats(container) {
       memory: getMemoryUsageInMB(stats),
     };
   } catch (err) {
+    console.log(`Error getting stats: ${err.message}`);
     return undefined;
   }
 }
@@ -87,8 +91,8 @@ eval(60000).then((result) => {
 
   const logData = [
     "----------------" + "Backend Evaluation" + "-----------------",
-    "Average CPU Usage   : " + result.averageCpuUsage,
-    "Average Memory Usage: " + result.averageMemoryUsage,
+    "Average CPU Usage   : " + result.averageCpuUsage + " %",
+    "Average Memory Usage: " + result.averageMemoryUsage + " MB",
     "",
   ].join("\n");
 

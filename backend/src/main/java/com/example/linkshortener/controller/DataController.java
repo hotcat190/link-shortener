@@ -1,22 +1,17 @@
 package com.example.linkshortener.controller;
 
-import com.example.linkshortener.config.RabbitMQConfig;
 import com.example.linkshortener.data.dto.CreationRequest;
 import com.example.linkshortener.data.entity.Data;
 import com.example.linkshortener.service.CacheService;
 import com.example.linkshortener.service.DataService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLIntegrityConstraintViolationException;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @CrossOrigin(origins = "*") 
@@ -25,19 +20,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public final class DataController {
 
-    private static final Logger log = LoggerFactory.getLogger(DataController.class);
-
     @Autowired
     private DataService dataService;
     
     @Autowired
     private CacheService cacheService;
-    
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
-    
-    @Value("${features.analytics.rabbitmq.enabled}")
-    private boolean rabbitMqAnalyticsEnabled;
 
     @PostMapping
     public ResponseEntity<String> createShortUrl(

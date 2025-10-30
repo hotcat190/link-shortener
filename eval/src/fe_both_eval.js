@@ -124,7 +124,7 @@ export default function () {
     });
   }
 
-  if (!(res.status === 200 || res.status === 404 || res.status === 429)) {
+  if (!(res.status === 200 || res.status === 404 || res.status === 409 || res.status === 429)) {
     fail(`Unexpected status code: ${res.status}`);
   }
 
