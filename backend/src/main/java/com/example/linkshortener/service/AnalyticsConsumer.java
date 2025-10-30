@@ -2,7 +2,6 @@ package com.example.linkshortener.service;
 
 import com.example.linkshortener.config.RabbitMQConfig;
 import com.example.linkshortener.data.dto.ClickEvent;
-import com.example.linkshortener.data.dto.QrCreationEvent;
 import com.example.linkshortener.data.repository.DataRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
