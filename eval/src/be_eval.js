@@ -1,5 +1,6 @@
 const Docker = require("dockerode");
 const fs = require("fs");
+const path = require("path");
 
 const DOCKER_HOST = "localhost";
 const DOCKER_PORT = 2375;
@@ -76,8 +77,13 @@ async function eval(totalRunTime) {
 }
 
 eval(60000).then((result) => {
-  const logFilePath =
-    "/home/kali/link-shortener/eval/results/logs/be.log";
+  const logFilePath = path.join(
+    __dirname,
+    "..",
+    "results",
+    "logs",
+    "be.log"
+  )
 
   const logData = [
     "----------------" + "Backend Evaluation" + "-----------------",

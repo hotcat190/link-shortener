@@ -71,7 +71,7 @@ http.setResponseCallback(http.expectedStatuses(200, 404, 409, 429));
 export default function () {
   const ip = getRandomIp();
 
-  const url = "http://localhost:8888/api";
+  const url = "http://localhost:80/api";
 
   const body = getBody();
 
