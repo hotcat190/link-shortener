@@ -8,11 +8,17 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/url_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
+
+      SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_RABBITMQ_USER: user
-      SPRING_RABBITMQ_PASS: pass
+      SPRING_RABBITMQ_PASS: password
     depends_on:
       db:
         condition: service_healthy
+      rabbitmq:
+        condition: service_started
+      redis:
+        condition: service_started
 
   db:
     image: mysql:8.0
