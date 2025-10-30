@@ -12,6 +12,9 @@ services:
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_RABBITMQ_USER: user
       SPRING_RABBITMQ_PASS: password
+
+      # FEATURES_ANALYTICS_RABBITMQ_ENABLED: false
+    
     depends_on:
       db:
         condition: service_healthy
