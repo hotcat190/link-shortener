@@ -1,10 +1,15 @@
 package com.example.linkshortener.service;
 
+import com.example.linkshortener.config.RabbitMQConfig;
 import com.example.linkshortener.data.dto.CreationRequest;
+import com.example.linkshortener.data.dto.LinkCreationEvent;
 import com.example.linkshortener.data.entity.Data;
 import com.example.linkshortener.data.repository.DataRepository;
 import com.example.linkshortener.util.CustomUUID;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -20,16 +25,25 @@ import java.util.Random;
 @Service
 @RequiredArgsConstructor
 public final class DataService {
-    private static final short MAX_SAVE_RETRIES = 5;
+
+    private static final Logger log = LoggerFactory.getLogger(DataService.class);
+    private static final short MAX_SAVE_RETRIES = 5; // Used only for custom URL collisions
+    private final Random random = new SecureRandom(); // Create one random instance
+
     @Autowired
     private final DataRepository dataRepository;
 
     @Autowired
     private final CacheService cacheService;
 
-    @Value("${cache.enabled:false}") // false is default if not set
+    @Value("${features.cache.enabled}")
     private boolean cacheEnabled;
 
+    @Autowired
+    private final RabbitTemplate rabbitTemplate;
+
+    @Value("${features.async.post.enabled}")
+    private boolean asyncPostEnabled;
 
     public String findOrigin(String shortenedUrl) {
         // Find info from cache first
@@ -93,27 +107,64 @@ public final class DataService {
                 .expirationTime(expirationTime)
                 .clickCount(0)
                 .build();
-
+        
+        String shortenedUrl;
+        
         if (customShortenedUrl != null) {
-            System.err.println("Custom shortened URL: " + customShortenedUrl);
-            // Case 1: Custom shortened URL is provided
+            // --- SLOW PATH (Synchronous) ---
+            // We must do this synchronously to check for 409 Conflict
+            log.debug("Using synchronous path for custom URL: {}", customShortenedUrl);
             try {
                 data.setShortenedUrl(customShortenedUrl.trim());
                 dataRepository.save(data);
+                shortenedUrl = data.getShortenedUrl();
             } catch (Exception e) {
+                // This exception is caught by the controller
                 throw new SQLIntegrityConstraintViolationException("Custom shortened URL already exists.");
             }
-        } else {
-            // Case 2: No custom shortened URL provided, generate a random one
-            data = generateShortenedUrlAndSave(data);
-            if (data == null) {
-                throw new SQLIntegrityConstraintViolationException(
-                        "Failed to generate a unique shortened URL, please try again or customize it."
+        } else if (asyncPostEnabled) {
+            // --- PATH 2: ASYNC POST FLAG is ON (Fast Path) ---
+            // Generate a random URL, publish to RMQ
+            log.debug("Using asynchronous path for random URL");
+            shortenedUrl = CustomUUID.random(random);
+            data.setShortenedUrl(shortenedUrl);
+
+            // 1. Publish to RabbitMQ for DB persistence            
+            try {
+                LinkCreationEvent event = LinkCreationEvent.builder()
+                        .url(data.getUrl())
+                        .shortenedUrl(data.getShortenedUrl())
+                        .creationTime(data.getCreationTime())
+                        .expirationTime(data.getExpirationTime())
+                        .build();
+
+                rabbitTemplate.convertAndSend(
+                        RabbitMQConfig.EXCHANGE_NAME,
+                        RabbitMQConfig.LINK_CREATION_ROUTING_KEY,
+                        event
                 );
+            } catch (Exception e) {
+                // If RabbitMQ fails, we must not return a link that will never be saved.
+                log.error("Failed to publish link creation event for {}: {}", shortenedUrl, e.getMessage());
+                // Fallback to synchronous save
+                log.warn("Falling back to synchronous save for {}", shortenedUrl);
+                Data savedData = generateShortenedUrlAndSave(data);
+                if (savedData == null) {
+                    throw new SQLIntegrityConstraintViolationException("Failed to generate a unique shortened URL.");
+                }
+                shortenedUrl = savedData.getShortenedUrl();
             }
+            
+        } else {
+            // --- PATH 3: ASYNC POST FLAG is OFF (Sync Fallback) ---
+            log.warn("Using synchronous fallback for random URL creation");
+            Data savedData = generateShortenedUrlAndSave(data);
+            if (savedData == null) {
+                throw new SQLIntegrityConstraintViolationException("Failed to generate a unique shortened URL.");
+            }
+            shortenedUrl = savedData.getShortenedUrl();
         }
 
-        String shortenedUrl = data.getShortenedUrl();
         if (cacheEnabled) {
             cacheService.saveToCache(shortenedUrl, url, ttlMinute != null ? ttlMinute * 60 : null);
         }

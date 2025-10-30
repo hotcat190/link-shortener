@@ -13,7 +13,8 @@ services:
       SPRING_RABBITMQ_USER: user
       SPRING_RABBITMQ_PASS: password
 
-      FEATURES_ANALYTICS_RABBITMQ_ENABLED: true
+      FEATURES_CACHE_ENABLED: true
+      FEATURES_ASYNC_POST_ENABLED: false
     
     depends_on:
       db:

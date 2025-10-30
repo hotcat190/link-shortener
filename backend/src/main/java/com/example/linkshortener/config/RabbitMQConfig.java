@@ -13,13 +13,15 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitMQConfig {
+
+    // --- Exchange ---
     public static final String EXCHANGE_NAME = "link_events_exchange";
 
-    public static final String CLICK_ANALYTICS_QUEUE = "click_analytics_queue";
-    public static final String QR_CREATION_QUEUE = "qr_creation_queue";
+    // --- Queue ---
+    public static final String LINK_CREATION_QUEUE = "link_creation_queue";
 
-    public static final String CLICK_ROUTING_KEY = "click";
-    public static final String QR_ROUTING_KEY = "qr";
+    // --- Routing Key ---
+    public static final String LINK_CREATION_ROUTING_KEY = "link.create";
 
     @Bean
     public DirectExchange linkEventsExchange() {
@@ -27,27 +29,15 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Queue clickAnalyticsQueue() {
-        return new Queue(CLICK_ANALYTICS_QUEUE, true); // Durable
+    public Queue linkCreationQueue() {
+        return new Queue(LINK_CREATION_QUEUE, true); // Durable
     }
 
     @Bean
-    public Queue qrCreationQueue() {
-        return new Queue(QR_CREATION_QUEUE, true); // Durable
-    }
-
-    @Bean
-    public Binding clickBinding(Queue clickAnalyticsQueue, DirectExchange linkEventsExchange) {
-        return BindingBuilder.bind(clickAnalyticsQueue)
+    public Binding linkCreationBinding(Queue linkCreationQueue, DirectExchange linkEventsExchange) {
+        return BindingBuilder.bind(linkCreationQueue)
                 .to(linkEventsExchange)
-                .with(CLICK_ROUTING_KEY);
-    }
-
-    @Bean
-    public Binding qrBinding(Queue qrCreationQueue, DirectExchange linkEventsExchange) {
-        return BindingBuilder.bind(qrCreationQueue)
-                .to(linkEventsExchange)
-                .with(QR_ROUTING_KEY);
+                .with(LINK_CREATION_ROUTING_KEY);
     }
 
     @Bean
