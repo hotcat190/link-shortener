@@ -1,16 +1,24 @@
 package com.example.linkshortener.controller;
 
+import com.example.linkshortener.config.RabbitMQConfig;
+import com.example.linkshortener.data.dto.ClickEvent;
 import com.example.linkshortener.data.dto.CreationRequest;
+import com.example.linkshortener.data.dto.QrCreationEvent;
 import com.example.linkshortener.data.entity.Data;
 import com.example.linkshortener.service.CacheService;
 import com.example.linkshortener.service.DataService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @CrossOrigin(origins = "*") 
@@ -18,10 +26,20 @@ import java.util.List;
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public final class DataController {
+
+    private static final Logger log = LoggerFactory.getLogger(DataController.class);
+
     @Autowired
     private DataService dataService;
+    
     @Autowired
     private CacheService cacheService;
+    
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+    
+    @Value("${features.analytics.rabbitmq.enabled}")
+    private boolean rabbitMqAnalyticsEnabled;
 
     @PostMapping
     public ResponseEntity<String> createShortUrl(
@@ -29,6 +47,21 @@ public final class DataController {
     ) {
         try {
             String shortenedUrl = dataService.shortenUrl(request);
+
+            try {
+                log.info("Publishing QR creation event for {}", shortenedUrl);
+                QrCreationEvent event = new QrCreationEvent(shortenedUrl);
+                rabbitTemplate.convertAndSend(
+                        RabbitMQConfig.EXCHANGE_NAME,
+                        RabbitMQConfig.QR_ROUTING_KEY,
+                        event
+                );
+            } catch (Exception e) {
+                // Log the error but DO NOT fail the request.
+                // The user's link was created successfully.
+                log.error("Failed to send QR creation event for {}: {}", shortenedUrl, e.getMessage());
+            }
+
             return ResponseEntity.ok(shortenedUrl);
         } catch (SQLIntegrityConstraintViolationException e) {
             return ResponseEntity.status(409).body("Custom shortened URL already exists.");
@@ -40,6 +73,27 @@ public final class DataController {
         String originalUrl = dataService.findOrigin(shortenedUrl);
         if (originalUrl != null) {
             cacheService.incrementClickCount(shortenedUrl); // Track clickCount 
+
+            if (rabbitMqAnalyticsEnabled) {
+                // RabbitMQ Asynchronous Path
+                try {
+                    log.debug("Publishing click event for {}", shortenedUrl);
+                    ClickEvent event = new ClickEvent(shortenedUrl, LocalDateTime.now());
+                    rabbitTemplate.convertAndSend(
+                            RabbitMQConfig.EXCHANGE_NAME,
+                            RabbitMQConfig.CLICK_ROUTING_KEY,
+                            event
+                    );
+                } catch (Exception e) {
+                    // Log the error, but DO NOT fail the redirect.
+                    log.error("Failed to send click event to RabbitMQ for {}: {}", shortenedUrl, e.getMessage());
+                }
+            } else {
+                // Fallback path using CacheService
+                log.debug("Using fallback (CacheService) click tracking for {}", shortenedUrl);
+                cacheService.incrementClickCount(shortenedUrl); // Track clickCount
+            }
+
             return ResponseEntity.ok(originalUrl);
         } else {
             return ResponseEntity.notFound().build();
