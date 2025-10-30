@@ -46,9 +46,7 @@ public final class DataService {
             // URL is expired if expirationTime is not null and is before the current time
             // If expirationTime is null, the URL is not expired
             if (data.getExpirationTime() == null ||
-                    data.getExpirationTime().isAfter(LocalDateTime.now())) {
-                data.setClickCount(data.getClickCount() + 1);
-                dataRepository.save(data);
+                    data.getExpirationTime().isAfter(LocalDateTime.now())) {                
 
                 if (cacheEnabled) {
                     LocalDateTime now = LocalDateTime.now();
