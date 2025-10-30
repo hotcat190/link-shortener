@@ -1,7 +1,6 @@
 package com.example.linkshortener.controller;
 
 import com.example.linkshortener.config.RabbitMQConfig;
-import com.example.linkshortener.data.dto.ClickEvent;
 import com.example.linkshortener.data.dto.CreationRequest;
 import com.example.linkshortener.data.entity.Data;
 import com.example.linkshortener.service.CacheService;
@@ -56,25 +55,7 @@ public final class DataController {
     public ResponseEntity<String> getOriginalUrl(@PathVariable String shortenedUrl) {
         String originalUrl = dataService.findOrigin(shortenedUrl);
         if (originalUrl != null) {
-            if (rabbitMqAnalyticsEnabled) {
-                // RabbitMQ Asynchronous Path
-                try {
-                    log.debug("Publishing click event for {}", shortenedUrl);
-                    ClickEvent event = new ClickEvent(shortenedUrl, LocalDateTime.now());
-                    rabbitTemplate.convertAndSend(
-                            RabbitMQConfig.EXCHANGE_NAME,
-                            RabbitMQConfig.CLICK_ROUTING_KEY,
-                            event
-                    );
-                } catch (Exception e) {
-                    // Log the error, but DO NOT fail the redirect.
-                    log.error("Failed to send click event to RabbitMQ for {}: {}", shortenedUrl, e.getMessage());
-                }
-            } else {
-                // Fallback path using CacheService
-                log.debug("Using fallback (CacheService) click tracking for {}", shortenedUrl);
-                cacheService.incrementClickCount(shortenedUrl); // Track clickCount
-            }
+            cacheService.incrementClickCount(shortenedUrl); // Track clickCount            
 
             return ResponseEntity.ok(originalUrl);
         } else {
