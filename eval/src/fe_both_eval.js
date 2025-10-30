@@ -108,7 +108,7 @@ export default function () {
   let res;
 
   if (Math.random() < 0.5) {
-    res = http.get(`http://localhost:8080/api/${getRandomId()}`, {
+    res = http.get(`http://localhost:8888/api/${getRandomId()}`, {
       headers: {
         "X-Forwarded-For": ip,
       },
@@ -116,7 +116,7 @@ export default function () {
   } else {
     const body = getBody();
 
-    res = http.post("http://localhost:8080/api", JSON.stringify(body), {
+    res = http.post("http://localhost:8888/api", JSON.stringify(body), {
       headers: {
         "Content-Type": "application/json",
         "X-Forwarded-For": ip,
