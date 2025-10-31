@@ -79,7 +79,6 @@ public final class DataService {
     }
 
     private Data generateShortenedUrlAndSave(Data data) {
-        Random random = new SecureRandom();
         for (int i = 0; i < MAX_SAVE_RETRIES; i++) {
             try {
                 String shortenedUrl = CustomUUID.random(random);

@@ -16,7 +16,9 @@
     "eval_get_500": "run-p be fe_get_500",
     "eval_create_500": "run-p be fe_create_500",
     "eval_both_500": "run-p be fe_both_500",
-    "eval_both_100": "run-p be fe_both_100"
+    "eval_both_100": "run-p be fe_both_100",
+    "fe_both_n": "sh -c 'k6 run src/fe_both_eval.js -e VUS=$1 --log-output file=results/logs/fe_both_$1.log' sh",
+    "eval_n": "run-p be fe_both_n"
   },
   "dependencies": {
     "dockerode": "^4.0.5",
