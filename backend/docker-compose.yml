@@ -1,29 +1,67 @@
 services:
-  app:
-    build: .
-    container_name: app
-    ports:
-      - "8080:8080"
+  # ------------------------------------------------------------
+  # Microservice 1: Redirect Service (Reads)
+  # ------------------------------------------------------------
+  redirect-service:
+    build: 
+      context: ./redirect-service # Assuming code is split into folders
+      dockerfile: Dockerfile
+    container_name: redirect-service
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/url_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/url_db?useSSL=false&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
+      SPRING_REDIS_HOST: redis
+      FEATURES_CACHE_ENABLED: true
+      SERVER_PORT: 8081
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
 
+  # ------------------------------------------------------------
+  # Microservice 2: Link Creation Service (Writes/API)
+  # ------------------------------------------------------------
+  creation-service:
+    build: 
+      context: ./creation-service
+      dockerfile: Dockerfile
+    container_name: creation-service
+    environment:
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_RABBITMQ_USER: user
       SPRING_RABBITMQ_PASS: password
-
-      FEATURES_CACHE_ENABLED: true
       FEATURES_ASYNC_POST_ENABLED: true
-    
+      SERVER_PORT: 8082
+    depends_on:
+      rabbitmq:
+        condition: service_started
+
+  # ------------------------------------------------------------
+  # Microservice 3: Worker/Consumer (Async Processing)
+  # ------------------------------------------------------------
+  link-consumer:
+    build: 
+      context: ./link-consumer
+      dockerfile: Dockerfile
+    container_name: link-consumer
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/url_db?useSSL=false&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_USER: user
+      SPRING_RABBITMQ_PASS: password
     depends_on:
       db:
         condition: service_healthy
       rabbitmq:
         condition: service_started
-      redis:
-        condition: service_started
 
+  # ------------------------------------------------------------
+  # Infrastructure Services (Unchanged structure)
+  # ------------------------------------------------------------
   db:
     image: mysql:8.0
     container_name: mysql
@@ -35,8 +73,7 @@ services:
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test:
-        ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -47,7 +84,8 @@ services:
     ports:
       - "80:80"
     depends_on:
-      - app
+      - redirect-service
+      - creation-service
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
