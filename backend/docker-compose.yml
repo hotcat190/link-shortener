@@ -25,7 +25,7 @@ services:
   # ------------------------------------------------------------
   creation-service:
     build: 
-      context: ./backend
+      context: .
       dockerfile: creation-service/Dockerfile
     container_name: creation-service
     environment:
