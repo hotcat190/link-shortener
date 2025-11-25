@@ -62,11 +62,8 @@ function getRandomIp() {
 
 function getBody() {
   const url = getRandomUrl();
-
   const ttlMinute = getRandomTtlMinuteOrNull();
-
   const customShortenedUrl = getRandomCustomShortenedUrlOrNull();
-
   return {
     url,
     ttlMinute,
@@ -83,18 +80,21 @@ http.setResponseCallback(http.expectedStatuses(200, 404, 409, 429));
 
 export default function () {
   const ip = getRandomIp();
-
   let res;
 
-  if (Math.random() < 0.5) {
+  // --- MODIFICATION ---
+  // Change Math.random() < 0.5 to < 0.9
+  // This will execute a GET request 90% of the time and a POST request 10% of the time.
+  if (Math.random() < 0.9) {
+    // 90% chance to be a GET request (click)
     res = http.get(`http://localhost:80/api/${getRandomId()}`, {
       headers: {
         "X-Forwarded-For": ip,
       },
     });
   } else {
+    // 10% chance to be a POST request (create)
     const body = getBody();
-
     res = http.post("http://localhost:80/api", JSON.stringify(body), {
       headers: {
         "Content-Type": "application/json",
@@ -102,6 +102,7 @@ export default function () {
       },
     });
   }
+  // --- END MODIFICATION ---
 
   if (!(res.status === 200 || res.status === 404 || res.status === 409 || res.status === 429)) {
     fail(`Unexpected status code: ${res.status}`);
