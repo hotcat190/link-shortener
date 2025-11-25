@@ -1,4 +1,4 @@
-package com.example.linkshortener.common.filter;
+package com.example.linkshortener.filter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

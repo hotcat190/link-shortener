@@ -1,4 +1,4 @@
-package com.example.linkshortener.common.util;
+package com.example.linkshortener.util;
 
 import java.util.Random;
 

@@ -1,4 +1,4 @@
-package com.example.linkshortener.common.util.validation;
+package com.example.linkshortener.util.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
