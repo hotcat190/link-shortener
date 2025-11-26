@@ -4,8 +4,8 @@ services:
   # ------------------------------------------------------------
   redirect-service:
     build: 
-      context: ./redirect-service # Assuming code is split into folders
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: redirect-service/Dockerfile
     container_name: redirect-service
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/url_db?useSSL=false&serverTimezone=UTC
@@ -35,6 +35,10 @@ services:
       FEATURES_ASYNC_POST_ENABLED: true
       SERVER_PORT: 8082
     depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
       rabbitmq:
         condition: service_started
 
@@ -43,8 +47,8 @@ services:
   # ------------------------------------------------------------
   link-consumer:
     build: 
-      context: ./link-consumer
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: link-consumer/Dockerfile
     container_name: link-consumer
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/url_db?useSSL=false&serverTimezone=UTC

@@ -10,8 +10,8 @@
     <packaging>pom</packaging> <modules>
         <module>common</module>
         <module>creation-service</module>
-        <!-- <module>redirect-service</module>
-        <module>link-consumer</module> -->
+        <module>redirect-service</module>
+        <!-- <module>link-consumer</module> -->
     </modules>
 
     <parent>
