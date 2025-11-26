@@ -66,7 +66,7 @@ export default function () {
   if (vuId % 10 < 8) {
     // --- ROLE 1: 80% of VUs (IDs 1-8, 11-18, etc.) ---
     // These VUs will ONLY send GET requests
-    res = http.get(`http://localhost:80/api/${getRandomId()}`, {
+    res = http.get(`http://localhost:80/${getRandomId()}`, {
       headers: {
         "X-Forwarded-For": ip,
       },

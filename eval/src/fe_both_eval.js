@@ -87,7 +87,7 @@ export default function () {
   let res;
 
   if (Math.random() < 0.5) {
-    res = http.get(`http://localhost:80/api/${getRandomId()}`, {
+    res = http.get(`http://localhost:80/${getRandomId()}`, {
       headers: {
         "X-Forwarded-For": ip,
       },
