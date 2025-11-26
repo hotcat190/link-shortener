@@ -16,9 +16,8 @@ import java.util.List;
 public class CorsConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable)
-                .cors(Customizer.withDefaults());
+        http.csrf(AbstractHttpConfigurer::disable)
+            .cors(Customizer.withDefaults());
         return http.build();
     }
 
