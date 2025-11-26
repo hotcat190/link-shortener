@@ -29,7 +29,7 @@ http.setResponseCallback(http.expectedStatuses(200, 404, 409, 429));
 export default function () {
   const ip = getRandomIp();
 
-  let res = http.get(`http://localhost:80/api/${getRandomId()}`, {
+  let res = http.get(`http://localhost:80/${getRandomId()}`, {
     headers: {
       "X-Forwarded-For": ip,
     },

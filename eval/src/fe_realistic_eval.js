@@ -87,7 +87,7 @@ export default function () {
   // This will execute a GET request 90% of the time and a POST request 10% of the time.
   if (Math.random() < 0.9) {
     // 90% chance to be a GET request (click)
-    res = http.get(`http://localhost:80/api/${getRandomId()}`, {
+    res = http.get(`http://localhost:80/${getRandomId()}`, {
       headers: {
         "X-Forwarded-For": ip,
       },

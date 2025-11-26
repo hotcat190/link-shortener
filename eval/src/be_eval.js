@@ -2,15 +2,14 @@ const Docker = require("dockerode");
 const fs = require("fs");
 const path = require("path");
 
-const vus = process.argv[2] || "N/A";
-const sync_label = process.argv[3] || "N/A";
-const fe_label = process.argv[4] || "N/A";
-const cache_enabled = process.argv [5] || "N/A";
+const script_label = process.argv[2] || "N/A";
+const vus = process.argv[3] || "N/A";
 
 const DOCKER_HOST = "localhost";
 const DOCKER_PORT = 2375;
 
-const CONTAINER_NAMES = ["app", "mysql", "redis", "nginx", "rabbitmq"];
+// const CONTAINER_NAMES = ["app", "mysql", "redis", "nginx", "rabbitmq"];
+const CONTAINER_NAMES = ["creation-service", "redirect-service", "link-consumer", "mysql", "redis", "nginx", "rabbitmq"];
 
 const docker = new Docker({
   socketPath: "/var/run/docker.sock",
@@ -94,7 +93,7 @@ eval(60000).then((result) => {
     "be.log"
   )
 
-  const header = `---------------- Backend Evaluation, ${vus} VUs, ${sync_label}, ${fe_label}, ${cache_enabled} ----------------`
+  const header = `---------------- Backend Evaluation, ${script_label}, ${vus} VUs ----------------`
 
   const logData = [
     header,
