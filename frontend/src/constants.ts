@@ -1,2 +1,3 @@
-export const BASE_BACKEND_URL = "/api";
-export const BASE_FRONTEND_URL = `http://${__LOCAL_IP__}:5173`;
+export const BASE_BACKEND_URL = "http://localhost/api";
+export const BASE_REDIRECT_SERVICE_URL = "http://localhost"
+export const BASE_FRONTEND_URL = `http://localhost:5173`;

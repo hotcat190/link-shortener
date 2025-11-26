@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
-import { BASE_BACKEND_URL } from "./constants";
+import { BASE_REDIRECT_SERVICE_URL } from "./constants";
 import "./RedirectPage.css";
 
 const RedirectPage: React.FC = () => {
@@ -20,7 +20,7 @@ const RedirectPage: React.FC = () => {
 
     console.log("Fetching redirect for shortId:", shortId);
     try {
-      const res = await fetch(`${BASE_BACKEND_URL}/${shortId}`, {
+      const res = await fetch(`${BASE_REDIRECT_SERVICE_URL}/${shortId}`, {
         headers: { Accept: "text/plain" },
       });
 

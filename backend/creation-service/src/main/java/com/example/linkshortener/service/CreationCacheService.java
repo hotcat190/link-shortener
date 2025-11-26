@@ -28,4 +28,8 @@ public class CreationCacheService {
             redisTemplate.persist(key);
         }
     }
+
+    public void deleteFromCache(String shortenedUrl) {
+        redisTemplate.delete("url:" + shortenedUrl);
+    }
 }

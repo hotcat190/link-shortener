@@ -11,11 +11,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Random;
 
 @Service
@@ -114,5 +116,20 @@ public class CreationService {
             } catch (Exception ignored) {}
         }
         return null;
+    }
+
+    public void deleteUrl(String shortenedUrl) {
+        dataRepository.findByShortenedUrl(shortenedUrl)
+                .ifPresent(dataRepository::delete); // Shorter lambda
+
+        cacheService.deleteFromCache(shortenedUrl); // Still delete from Redis just in case
+    }
+
+    public void deleteAll() {
+        dataRepository.deleteAll();
+    }
+
+    public List<Data> findAll(int page, int size) {
+        return dataRepository.findAll(PageRequest.of(page, size)).getContent();
     }
 }
