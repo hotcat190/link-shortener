@@ -11,6 +11,9 @@ COPY common/src common/src
 COPY link-consumer/pom.xml link-consumer/pom.xml
 COPY link-consumer/src link-consumer/src
 
+COPY creation-service/pom.xml creation-service/pom.xml
+COPY redirect-service/pom.xml redirect-service/pom.xml
+
 # Build
 RUN mvn clean package -DskipTests -pl link-consumer -am
 

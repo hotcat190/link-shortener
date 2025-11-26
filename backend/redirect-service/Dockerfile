@@ -13,6 +13,9 @@ COPY common/src common/src
 COPY redirect-service/pom.xml redirect-service/pom.xml
 COPY redirect-service/src redirect-service/src
 
+COPY creation-service/pom.xml creation-service/pom.xml
+COPY link-consumer/pom.xml link-consumer/pom.xml
+
 # 4. Build everything
 # -pl redirect-service : Only build the creation-service project
 # -am : Also make (build) dependencies (which handles 'common' and 'parent')
