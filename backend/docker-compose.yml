@@ -8,15 +8,21 @@ services:
       dockerfile: redirect-service/Dockerfile
     container_name: redirect-service
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/url_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
+      # Sharding DataSources
+      DATASOURCE_SHARD1_URL: jdbc:mysql://mysql_shard_1:3306/url_db_1?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      DATASOURCE_SHARD1_USERNAME: root
+      DATASOURCE_SHARD1_PASSWORD: root
+      DATASOURCE_SHARD2_URL: jdbc:mysql://mysql_shard_2:3306/url_db_2?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      DATASOURCE_SHARD2_USERNAME: root
+      DATASOURCE_SHARD2_PASSWORD: root
       SPRING_DATA_REDIS_HOST: redis
       SPRING_DATA_REDIS_PORT: 6379
       FEATURES_CACHE_ENABLED: true
       SERVER_PORT: 8081
     depends_on:
-      db:
+      mysql_shard_1:
+        condition: service_healthy
+      mysql_shard_2:
         condition: service_healthy
       redis:
         condition: service_started
@@ -30,9 +36,13 @@ services:
       dockerfile: creation-service/Dockerfile
     container_name: creation-service
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/url_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
+      # Sharding DataSources
+      DATASOURCE_SHARD1_URL: jdbc:mysql://mysql_shard_1:3306/url_db_1?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      DATASOURCE_SHARD1_USERNAME: root
+      DATASOURCE_SHARD1_PASSWORD: root
+      DATASOURCE_SHARD2_URL: jdbc:mysql://mysql_shard_2:3306/url_db_2?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      DATASOURCE_SHARD2_USERNAME: root
+      DATASOURCE_SHARD2_PASSWORD: root
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_RABBITMQ_USER: user
       SPRING_RABBITMQ_PASS: password
@@ -41,7 +51,9 @@ services:
       FEATURES_ASYNC_POST_ENABLED: true
       SERVER_PORT: 8082
     depends_on:
-      db:
+      mysql_shard_1:
+        condition: service_healthy
+      mysql_shard_2:
         condition: service_healthy
       redis:
         condition: service_started
@@ -57,37 +69,64 @@ services:
       dockerfile: link-consumer/Dockerfile
     container_name: link-consumer
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/url_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
+      # Sharding DataSources
+      DATASOURCE_SHARD1_URL: jdbc:mysql://mysql_shard_1:3306/url_db_1?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      DATASOURCE_SHARD1_USERNAME: root
+      DATASOURCE_SHARD1_PASSWORD: root
+      DATASOURCE_SHARD2_URL: jdbc:mysql://mysql_shard_2:3306/url_db_2?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      DATASOURCE_SHARD2_USERNAME: root
+      DATASOURCE_SHARD2_PASSWORD: root
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_RABBITMQ_USER: user
       SPRING_RABBITMQ_PASS: password
     depends_on:
-      db:
+      mysql_shard_1:
+        condition: service_healthy
+      mysql_shard_2:
         condition: service_healthy
       rabbitmq:
         condition: service_started
 
   # ------------------------------------------------------------
-  # Infrastructure Services (Unchanged structure)
+  # Database Shards
   # ------------------------------------------------------------
-  db:
+  mysql_shard_1:
     image: mysql:8.0
-    container_name: mysql
+    container_name: mysql_shard_1
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: url_db
+      MYSQL_DATABASE: url_db_1
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./init-shard.sql:/docker-entrypoint-initdb.d/init.sql
+      - mysql_shard_1_data:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
       interval: 5s
       timeout: 5s
       retries: 5
 
+  mysql_shard_2:
+    image: mysql:8.0
+    container_name: mysql_shard_2
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: url_db_2
+    ports:
+      - "3308:3306"
+    volumes:
+      - ./init-shard.sql:/docker-entrypoint-initdb.d/init.sql
+      - mysql_shard_2_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ------------------------------------------------------------
+  # Infrastructure Services
+  # ------------------------------------------------------------
   nginx:
     image: nginx:latest
     container_name: nginx
@@ -116,3 +155,7 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: user
       RABBITMQ_DEFAULT_PASS: password
+
+volumes:
+  mysql_shard_1_data:
+  mysql_shard_2_data:
