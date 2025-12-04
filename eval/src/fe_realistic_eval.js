@@ -3,7 +3,7 @@ import { fail, sleep } from "k6";
 
 // Sample shortened url ids for testing
 // Please replace with your own ids if needed
-import sampleValidIds from "./constants";
+import sampleValidIds from "./constants.js";
 
 const sampleUrls = [
   "https://youtube.com",
