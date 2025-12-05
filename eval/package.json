@@ -19,10 +19,10 @@
     "eval_both_500": "run-p be fe_both_500",
     "eval_both_100": "run-p be fe_both_100",
     "eval_both_1000": "run-p be fe_both_1000",
-    "eval_n": "sh -c 'k6 run src/fe_both_eval.js -e VUS=$1 > results/logs/fe_both_$1_$2_$3.log 2>/dev/null ; ' sh",
-    "eval_create_n": "sh -c 'k6 run src/fe_create_eval.js -e VUS=$1 > results/logs/fe_create_$1_$2_$3.log 2>/dev/null ; ' sh",
-    "eval_realistic_n": "sh -c 'k6 run src/fe_realistic_eval.js -e VUS=$1 > results/logs/fe_realistic_$1_$2_$3.log 2>/dev/null; ' sh",
-    "eval_predictable_n": "sh -c 'k6 run src/fe_predictable_eval.js -e VUS=$1 > results/logs/fe_predictable_$1_$2_$3.log 2>/dev/null ; ' sh"
+    "eval_n": "sh -c 'k6 run src/fe_both_eval.js -e VUS=$1 > results/logs/ver3/fe_both_$1_$2_$3.log 2>/dev/null ; ' sh",
+    "eval_create_n": "sh -c 'k6 run src/fe_create_eval.js -e VUS=$1 > results/logs/ver3/fe_create_$1_$2_$3.log 2>/dev/null ; ' sh",
+    "eval_realistic_n": "sh -c 'k6 run src/fe_realistic_eval.js -e VUS=$1 > results/logs/ver3/fe_realistic_$1_$2_$3.log 2>/dev/null; ' sh",
+    "eval_predictable_n": "sh -c 'k6 run src/fe_predictable_eval.js -e VUS=$1 > results/logs/ver3/fe_predictable_$1_$2_$3.log 2>/dev/null ; ' sh"
   },
   "dependencies": {
     "dockerode": "^4.0.5",
