@@ -1,0 +1,250 @@
+================ Backend Evaluation (Ver 3 - Microservices + Sharding) ================
+Script: eval_predictable_n, VUs: 100
+--------------------------------------------------------------------------------
+
+=== TOTAL (All Containers) ===
+  CPU Usage   : 617.18 %
+  Memory Usage: 1846.62 MB
+
+=== CORE ONLY (For Monolith Comparison) ===
+  Containers  : creation-service, redirect-service, link-consumer, mysql_shard_1, mysql_shard_2
+  CPU Usage   : 557.62 %
+  Memory Usage: 1658.95 MB
+
+=== PER-CONTAINER BREAKDOWN ===
+  creation-service     [CORE] CPU:   203.87 %  |  RAM:     384.02 MB
+  redirect-service     [CORE] CPU:   227.88 %  |  RAM:     380.96 MB
+  link-consumer        [CORE] CPU:    85.52 %  |  RAM:     288.32 MB
+  mysql_shard_1        [CORE] CPU:    19.47 %  |  RAM:     314.88 MB
+  mysql_shard_2        [CORE] CPU:    20.90 %  |  RAM:     290.79 MB
+  redis                [INFRA] CPU:    19.04 %  |  RAM:      76.45 MB
+  nginx                [INFRA] CPU:    32.34 %  |  RAM:      18.11 MB
+  rabbitmq             [INFRA] CPU:     8.17 %  |  RAM:      93.11 MB
+
+--------------------------------------------------------------------------------
+
+================ Backend Evaluation (Ver 3 - Microservices + Sharding) ================
+Script: eval_predictable_n, VUs: 200
+--------------------------------------------------------------------------------
+
+=== TOTAL (All Containers) ===
+  CPU Usage   : 521.49 %
+  Memory Usage: 1852.20 MB
+
+=== CORE ONLY (For Monolith Comparison) ===
+  Containers  : creation-service, redirect-service, link-consumer, mysql_shard_1, mysql_shard_2
+  CPU Usage   : 430.09 %
+  Memory Usage: 1655.22 MB
+
+=== PER-CONTAINER BREAKDOWN ===
+  creation-service     [CORE] CPU:   164.55 %  |  RAM:     382.84 MB
+  redirect-service     [CORE] CPU:   142.12 %  |  RAM:     400.92 MB
+  link-consumer        [CORE] CPU:    70.82 %  |  RAM:     303.51 MB
+  mysql_shard_1        [CORE] CPU:    26.30 %  |  RAM:     298.56 MB
+  mysql_shard_2        [CORE] CPU:    26.31 %  |  RAM:     269.40 MB
+  redis                [INFRA] CPU:    24.87 %  |  RAM:      78.31 MB
+  nginx                [INFRA] CPU:    54.42 %  |  RAM:      19.02 MB
+  rabbitmq             [INFRA] CPU:    12.10 %  |  RAM:      99.65 MB
+
+--------------------------------------------------------------------------------
+
+================ Backend Evaluation (Ver 3 - Microservices + Sharding) ================
+Script: eval_predictable_n, VUs: 300
+--------------------------------------------------------------------------------
+
+=== TOTAL (All Containers) ===
+  CPU Usage   : 456.05 %
+  Memory Usage: 1739.69 MB
+
+=== CORE ONLY (For Monolith Comparison) ===
+  Containers  : creation-service, redirect-service, link-consumer, mysql_shard_1, mysql_shard_2
+  CPU Usage   : 346.11 %
+  Memory Usage: 1558.63 MB
+
+=== PER-CONTAINER BREAKDOWN ===
+  creation-service     [CORE] CPU:    74.04 %  |  RAM:     376.77 MB
+  redirect-service     [CORE] CPU:   173.03 %  |  RAM:     392.19 MB
+  link-consumer        [CORE] CPU:    42.95 %  |  RAM:     269.91 MB
+  mysql_shard_1        [CORE] CPU:    28.48 %  |  RAM:     275.20 MB
+  mysql_shard_2        [CORE] CPU:    27.60 %  |  RAM:     244.56 MB
+  redis                [INFRA] CPU:    28.35 %  |  RAM:      75.75 MB
+  nginx                [INFRA] CPU:    69.27 %  |  RAM:      16.91 MB
+  rabbitmq             [INFRA] CPU:    12.32 %  |  RAM:      88.39 MB
+
+--------------------------------------------------------------------------------
+
+================ Backend Evaluation (Ver 3 - Microservices + Sharding) ================
+Script: eval_predictable_n, VUs: 400
+--------------------------------------------------------------------------------
+
+=== TOTAL (All Containers) ===
+  CPU Usage   : 463.13 %
+  Memory Usage: 1690.16 MB
+
+=== CORE ONLY (For Monolith Comparison) ===
+  Containers  : creation-service, redirect-service, link-consumer, mysql_shard_1, mysql_shard_2
+  CPU Usage   : 342.44 %
+  Memory Usage: 1544.20 MB
+
+=== PER-CONTAINER BREAKDOWN ===
+  creation-service     [CORE] CPU:    68.35 %  |  RAM:     379.08 MB
+  redirect-service     [CORE] CPU:   179.69 %  |  RAM:     406.13 MB
+  link-consumer        [CORE] CPU:    46.73 %  |  RAM:     249.50 MB
+  mysql_shard_1        [CORE] CPU:    24.02 %  |  RAM:     280.32 MB
+  mysql_shard_2        [CORE] CPU:    23.64 %  |  RAM:     229.18 MB
+  redis                [INFRA] CPU:    33.07 %  |  RAM:      76.42 MB
+  nginx                [INFRA] CPU:    76.65 %  |  RAM:       9.80 MB
+  rabbitmq             [INFRA] CPU:    10.97 %  |  RAM:      59.74 MB
+
+--------------------------------------------------------------------------------
+
+================ Backend Evaluation (Ver 3 - Microservices + Sharding) ================
+Script: eval_predictable_n, VUs: 500
+--------------------------------------------------------------------------------
+
+=== TOTAL (All Containers) ===
+  CPU Usage   : 422.30 %
+  Memory Usage: 1710.19 MB
+
+=== CORE ONLY (For Monolith Comparison) ===
+  Containers  : creation-service, redirect-service, link-consumer, mysql_shard_1, mysql_shard_2
+  CPU Usage   : 300.96 %
+  Memory Usage: 1565.50 MB
+
+=== PER-CONTAINER BREAKDOWN ===
+  creation-service     [CORE] CPU:    65.21 %  |  RAM:     370.25 MB
+  redirect-service     [CORE] CPU:   168.95 %  |  RAM:     485.31 MB
+  link-consumer        [CORE] CPU:    19.59 %  |  RAM:     236.38 MB
+  mysql_shard_1        [CORE] CPU:    23.37 %  |  RAM:     260.76 MB
+  mysql_shard_2        [CORE] CPU:    23.85 %  |  RAM:     212.81 MB
+  redis                [INFRA] CPU:    32.44 %  |  RAM:      77.10 MB
+  nginx                [INFRA] CPU:    77.41 %  |  RAM:      10.46 MB
+  rabbitmq             [INFRA] CPU:    11.48 %  |  RAM:      57.12 MB
+
+--------------------------------------------------------------------------------
+
+================ Backend Evaluation (Ver 3 - Microservices + Sharding) ================
+Script: eval_predictable_n, VUs: 600
+--------------------------------------------------------------------------------
+
+=== TOTAL (All Containers) ===
+  CPU Usage   : 414.65 %
+  Memory Usage: 1710.60 MB
+
+=== CORE ONLY (For Monolith Comparison) ===
+  Containers  : creation-service, redirect-service, link-consumer, mysql_shard_1, mysql_shard_2
+  CPU Usage   : 293.67 %
+  Memory Usage: 1565.08 MB
+
+=== PER-CONTAINER BREAKDOWN ===
+  creation-service     [CORE] CPU:    60.84 %  |  RAM:     369.03 MB
+  redirect-service     [CORE] CPU:   161.64 %  |  RAM:     510.57 MB
+  link-consumer        [CORE] CPU:    18.80 %  |  RAM:     228.08 MB
+  mysql_shard_1        [CORE] CPU:    26.01 %  |  RAM:     250.77 MB
+  mysql_shard_2        [CORE] CPU:    26.39 %  |  RAM:     206.63 MB
+  redis                [INFRA] CPU:    32.70 %  |  RAM:      78.20 MB
+  nginx                [INFRA] CPU:    77.17 %  |  RAM:      11.10 MB
+  rabbitmq             [INFRA] CPU:    11.11 %  |  RAM:      56.22 MB
+
+--------------------------------------------------------------------------------
+
+================ Backend Evaluation (Ver 3 - Microservices + Sharding) ================
+Script: eval_predictable_n, VUs: 700
+--------------------------------------------------------------------------------
+
+=== TOTAL (All Containers) ===
+  CPU Usage   : 338.26 %
+  Memory Usage: 1395.69 MB
+
+=== CORE ONLY (For Monolith Comparison) ===
+  Containers  : creation-service, redirect-service, link-consumer, mysql_shard_1, mysql_shard_2
+  CPU Usage   : 241.85 %
+  Memory Usage: 1261.12 MB
+
+=== PER-CONTAINER BREAKDOWN ===
+  creation-service     [CORE] CPU:    61.46 %  |  RAM:     345.46 MB
+  redirect-service     [CORE] CPU:   131.36 %  |  RAM:     448.17 MB
+  link-consumer        [CORE] CPU:    10.99 %  |  RAM:     200.97 MB
+  mysql_shard_1        [CORE] CPU:    18.97 %  |  RAM:     132.11 MB
+  mysql_shard_2        [CORE] CPU:    19.07 %  |  RAM:     134.41 MB
+  redis                [INFRA] CPU:    24.67 %  |  RAM:      73.66 MB
+  nginx                [INFRA] CPU:    62.80 %  |  RAM:      11.38 MB
+  rabbitmq             [INFRA] CPU:     8.93 %  |  RAM:      49.53 MB
+
+--------------------------------------------------------------------------------
+
+================ Backend Evaluation (Ver 3 - Microservices + Sharding) ================
+Script: eval_predictable_n, VUs: 800
+--------------------------------------------------------------------------------
+
+=== TOTAL (All Containers) ===
+  CPU Usage   : 433.96 %
+  Memory Usage: 1460.06 MB
+
+=== CORE ONLY (For Monolith Comparison) ===
+  Containers  : creation-service, redirect-service, link-consumer, mysql_shard_1, mysql_shard_2
+  CPU Usage   : 307.00 %
+  Memory Usage: 1329.34 MB
+
+=== PER-CONTAINER BREAKDOWN ===
+  creation-service     [CORE] CPU:    65.53 %  |  RAM:     405.53 MB
+  redirect-service     [CORE] CPU:   172.85 %  |  RAM:     427.78 MB
+  link-consumer        [CORE] CPU:    17.72 %  |  RAM:     244.91 MB
+  mysql_shard_1        [CORE] CPU:    26.43 %  |  RAM:     122.74 MB
+  mysql_shard_2        [CORE] CPU:    24.47 %  |  RAM:     128.38 MB
+  redis                [INFRA] CPU:    32.86 %  |  RAM:      78.82 MB
+  nginx                [INFRA] CPU:    82.50 %  |  RAM:      10.88 MB
+  rabbitmq             [INFRA] CPU:    11.60 %  |  RAM:      41.03 MB
+
+--------------------------------------------------------------------------------
+
+================ Backend Evaluation (Ver 3 - Microservices + Sharding) ================
+Script: eval_predictable_n, VUs: 900
+--------------------------------------------------------------------------------
+
+=== TOTAL (All Containers) ===
+  CPU Usage   : 405.51 %
+  Memory Usage: 1459.63 MB
+
+=== CORE ONLY (For Monolith Comparison) ===
+  Containers  : creation-service, redirect-service, link-consumer, mysql_shard_1, mysql_shard_2
+  CPU Usage   : 286.89 %
+  Memory Usage: 1326.11 MB
+
+=== PER-CONTAINER BREAKDOWN ===
+  creation-service     [CORE] CPU:    66.94 %  |  RAM:     400.06 MB
+  redirect-service     [CORE] CPU:   157.92 %  |  RAM:     428.63 MB
+  link-consumer        [CORE] CPU:    14.97 %  |  RAM:     244.31 MB
+  mysql_shard_1        [CORE] CPU:    22.63 %  |  RAM:     124.58 MB
+  mysql_shard_2        [CORE] CPU:    24.43 %  |  RAM:     128.53 MB
+  redis                [INFRA] CPU:    32.58 %  |  RAM:      78.87 MB
+  nginx                [INFRA] CPU:    74.73 %  |  RAM:      11.06 MB
+  rabbitmq             [INFRA] CPU:    11.31 %  |  RAM:      43.59 MB
+
+--------------------------------------------------------------------------------
+
+================ Backend Evaluation (Ver 3 - Microservices + Sharding) ================
+Script: eval_predictable_n, VUs: 1000
+--------------------------------------------------------------------------------
+
+=== TOTAL (All Containers) ===
+  CPU Usage   : 388.33 %
+  Memory Usage: 1566.37 MB
+
+=== CORE ONLY (For Monolith Comparison) ===
+  Containers  : creation-service, redirect-service, link-consumer, mysql_shard_1, mysql_shard_2
+  CPU Usage   : 273.50 %
+  Memory Usage: 1430.31 MB
+
+=== PER-CONTAINER BREAKDOWN ===
+  creation-service     [CORE] CPU:    62.07 %  |  RAM:     390.88 MB
+  redirect-service     [CORE] CPU:   150.05 %  |  RAM:     578.46 MB
+  link-consumer        [CORE] CPU:    14.93 %  |  RAM:     237.93 MB
+  mysql_shard_1        [CORE] CPU:    21.98 %  |  RAM:     111.52 MB
+  mysql_shard_2        [CORE] CPU:    24.49 %  |  RAM:     111.51 MB
+  redis                [INFRA] CPU:    29.01 %  |  RAM:      79.50 MB
+  nginx                [INFRA] CPU:    74.98 %  |  RAM:      11.37 MB
+  rabbitmq             [INFRA] CPU:    10.83 %  |  RAM:      45.19 MB
+
+--------------------------------------------------------------------------------
+

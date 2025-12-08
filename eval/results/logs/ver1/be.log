@@ -1,0 +1,68 @@
+----------------Backend Evaluation-----------------
+Average CPU Usage   : 195.85038960377773
+Average Memory Usage: 1273.3231770833333
+
+----------------Backend Evaluation-----------------
+Average CPU Usage   : 69.34315015736642
+Average Memory Usage: 1579.7713541666667
+
+----------------Backend Evaluation-----------------
+Average CPU Usage   : 75.2037244873134
+Average Memory Usage: 1640.5743489583333
+
+----------------Backend Evaluation-----------------
+Average CPU Usage   : 0
+Average Memory Usage: 0
+
+----------------Backend Evaluation-----------------
+Average CPU Usage   : 0
+Average Memory Usage: 0
+
+----------------Backend Evaluation-----------------
+Average CPU Usage   : 402.83384568010115
+Average Memory Usage: 667.7594651442307
+
+----------------Backend Evaluation-----------------
+Average CPU Usage   : 335.7951950597708
+Average Memory Usage: 744.98875
+
+---------------- Backend Evaluation, eval_predictable_n, 100 VUs ----------------
+Average CPU Usage   : 41.920007458551076 %
+Average Memory Usage: 755.1197916666666 MB
+
+---------------- Backend Evaluation, eval_predictable_n, 200 VUs ----------------
+Average CPU Usage   : 55.36367546497947 %
+Average Memory Usage: 694.0936197916667 MB
+
+---------------- Backend Evaluation, eval_predictable_n, 300 VUs ----------------
+Average CPU Usage   : 58.878432634963374 %
+Average Memory Usage: 674.1524739583333 MB
+
+---------------- Backend Evaluation, eval_predictable_n, 400 VUs ----------------
+Average CPU Usage   : 59.34745358647706 %
+Average Memory Usage: 662.1981770833333 MB
+
+---------------- Backend Evaluation, eval_predictable_n, 500 VUs ----------------
+Average CPU Usage   : 63.95287265201806 %
+Average Memory Usage: 623.3592447916667 MB
+
+---------------- Backend Evaluation, eval_predictable_n, 600 VUs ----------------
+Average CPU Usage   : 63.956469427989575 %
+Average Memory Usage: 559.7005208333334 MB
+
+---------------- Backend Evaluation, eval_predictable_n, 700 VUs ----------------
+Average CPU Usage   : 63.25184655303407 %
+Average Memory Usage: 535.1520833333333 MB
+
+---------------- Backend Evaluation, eval_predictable_n, 800 VUs ----------------
+Average CPU Usage   : 64.99288504534971 %
+Average Memory Usage: 550.2598958333333 MB
+
+---------------- Backend Evaluation, eval_predictable_n, 900 VUs ----------------
+Average CPU Usage   : 68.86786599606963 %
+Average Memory Usage: 520.0809895833333 MB
+
+---------------- Backend Evaluation, eval_predictable_n, 1000 VUs ----------------
+Average CPU Usage   : 78.65062054547847 %
+Average Memory Usage: 472.9036458333333 MB
+

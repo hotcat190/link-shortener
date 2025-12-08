@@ -1,14 +1,8 @@
 # Use the official OpenJDK image as the base image
-FROM openjdk:21-jdk-slim
+FROM maven:4.0.0-rc-5-amazoncorretto-21 AS build
 
 # Set the working directory inside the container
 WORKDIR /app
-
-# Install Maven
-RUN apt-get update && \
-    apt-get install -y maven && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
 
 # Copy the Maven build file to the container
 COPY pom.xml .
@@ -17,7 +11,12 @@ COPY pom.xml .
 COPY src ./src
 
 # Package the application using Maven
-RUN mvn package -DskipTests
+RUN mvn --version
 
-# Specify the command to run the application
-CMD ["java", "-jar", "target/linkshortener-0.0.1-SNAPSHOT.jar", "--cache.enabled=true"]
+RUN mvn clean package -DskipTests
+
+FROM amazoncorretto:21
+WORKDIR /app
+# Copy the specific JAR from the target folder of the module
+COPY --from=build /app/target/*.jar app.jar
+ENTRYPOINT ["java", "-jar", "app.jar"]
