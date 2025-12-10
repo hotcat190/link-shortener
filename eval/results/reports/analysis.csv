@@ -1,0 +1,6 @@
+Metric,Result,Interpretation
+Throughput,115 RPS,"The system handled ~115 requests per second. This is the ""speed limit"" for V1."
+Average Latency,3ms,Very fast. The code itself is efficient when it isn't blocked.
+P99 Latency,23ms,99% of users get a response in under 23ms. This is good.
+Max Latency,378ms,Warning Sign. Some requests took nearly 0.4 seconds. This suggests database locking or CPU throttling (GC pauses) during peak load.
+Error Rate,0.40%,The Problem. The system failed 96 times (out of 24.2k requests).

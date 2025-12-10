@@ -1,0 +1,8 @@
+Metric,SYNC,ASYNC
+FAILED REQUESTS,"5.40% (2,997/55472 reqs) ",0.00% (0/54155 reqs) 
+Average Duration,12.71 ms ,10.07 ms
+p90 Duration,21.19ms,13.49ms
+p95 Duration,43.83 ms ,40.32 ms 
+max,2.26s,675.99ms
+Total CPU Used,~304% ,~328%
+Total Memory Used,~1161 MB ,~1210 MB
