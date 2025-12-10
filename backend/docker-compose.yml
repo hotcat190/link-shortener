@@ -15,7 +15,11 @@ services:
 
       FEATURES_CACHE_ENABLED: true
       FEATURES_ASYNC_POST_ENABLED: true
-    
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'        # Limit to 50% of ONE CPU core
+          memory: 512M       # Limit to 512MB of RAM    
     depends_on:
       db:
         condition: service_healthy
