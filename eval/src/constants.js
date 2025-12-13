@@ -8,5 +8,5 @@ const sampleValidIds = [
   "custom-vu-19-vHPG70",
   "8b5wR7Mz2vR9"
 ];
-
+export const BASE_URL = "http://localhost:80";
 export default sampleValidIds;
